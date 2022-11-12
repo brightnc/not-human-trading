@@ -1,7 +1,163 @@
-created order :  &{ETHBUSD 4480137 UfARyxd9Cp1C5OdzysLKVN 0 0.010 0 0 false NEW 0 GTC MARKET BUY 1667473785548 CONTRACT_PRICE   0.00000 BOTH false false 0 1}
-created order :  &{ETHBUSD 4480142 cTj6vj7djs2NaN3FRpgDUX 0 0.010 0 0 false NEW 0 GTC MARKET BUY 1667473788196 CONTRACT_PRICE   0.00000 BOTH false false 1 2}
-created order :  &{ETHBUSD 4480143 4vIKVRep03le1GujhmL1d0 0 0.010 0 0 false NEW 0 GTC MARKET BUY 1667473789118 CONTRACT_PRICE   0.00000 BOTH false false 2 3}
-created order :  &{ETHBUSD 4480148 qDzbtOH9F1xTLnnxeIecql 0 0.010 0 0 false NEW 0 GTC MARKET BUY 1667473793395 CONTRACT_PRICE   0.00000 BOTH false false 0 4}
-created order :  &{ETHBUSD 4480149 oGQMKMtGCvILJ9ZzGZEwNu 0 0.010 0 0 false NEW 0 GTC MARKET BUY 1667473797125 CONTRACT_PRICE   0.00000 BOTH false false 1 5}
-created order :  &{ETHBUSD 4480154 6qpsLme4ubeBGK4fu7d7mz 0 0.010 0 0 false NEW 0 GTC MARKET BUY 1667473798946 CONTRACT_PRICE   0.00000 BOTH false false 2 6}
-created order :  1667480027766
+event Time :  1667488217741
+df view =>  [1x4] DataFrame
+
+    Symbol   DateTime                       UnixTime    Price
+ 0: ETHBUSD  Thu Nov 03 15:10:17 +0000 2022 1843e0afa8d 1550.030000
+    <string> <string>                       <string>    <float>
+
+result :  0  entry:  -1e-07
+created order :  &{ETHBUSD 4484882 hvdlsD5naYld2hXe5smbJL 0 0.010 0 0 false NEW 0 GTC MARKET BUY 1667488217997 CONTRACT_PRICE   0.00000 BOTH false false 0 1}
+creteadBuyOrder  &{ETHBUSD 4484882 hvdlsD5naYld2hXe5smbJL 0 0.010 0 0 false NEW 0 GTC MARKET BUY 1667488217997 CONTRACT_PRICE   0.00000 BOTH false false 0 1}
+afterCreatedOrderPriceRecords are empty 
+df view =>  [2x4] DataFrame
+
+    Symbol   DateTime                       UnixTime    Price
+ 0: ETHBUSD  Thu Nov 03 15:10:17 +0000 2022 1843e0afa8d 1550.030000
+ 1: ETHBUSD  Thu Nov 03 15:10:18 +0000 2022 1843e0afdc4 1550.090000
+    <string> <string>                       <string>    <float>
+
+afterCreatedOrderPriceRecords =>  [1x4] DataFrame
+
+    Symbol   DateTime                       UnixTime    Price
+ 0: ETHBUSD  Thu Nov 03 15:10:18 +0000 2022 1843e0afdc4 1550.090000
+    <string> <string>                       <string>    <float>
+
+created order :  &{ETHBUSD 4484883 khMIx7PFV5O4AywmSw6r3U 0 0.010 0 0 false NEW 0 GTC MARKET SELL 1667488218682 CONTRACT_PRICE   0.00000 BOTH false false 1 2}
+creteadSellOrder  &{ETHBUSD 4484883 khMIx7PFV5O4AywmSw6r3U 0 0.010 0 0 false NEW 0 GTC MARKET SELL 1667488218682 CONTRACT_PRICE   0.00000 BOTH false false 1 2}
+df view =>  [3x4] DataFrame
+
+    Symbol   DateTime                       UnixTime    Price
+ 0: ETHBUSD  Thu Nov 03 15:10:17 +0000 2022 1843e0afa8d 1550.030000
+ 1: ETHBUSD  Thu Nov 03 15:10:18 +0000 2022 1843e0afdc4 1550.090000
+ 2: ETHBUSD  Thu Nov 03 15:10:20 +0000 2022 1843e0b064c 1550.110000
+    <string> <string>                       <string>    <float>
+
+result :  5.161190428570883e-05  entry:  -1e-07
+created order :  &{ETHBUSD 4484884 uXcVUUkZSAxQWBkMN6HbbS 0 0.010 0 0 false NEW 0 GTC MARKET BUY 1667488221011 CONTRACT_PRICE   0.00000 BOTH false false 0 3}
+creteadBuyOrder  &{ETHBUSD 4484884 uXcVUUkZSAxQWBkMN6HbbS 0 0.010 0 0 false NEW 0 GTC MARKET BUY 1667488221011 CONTRACT_PRICE   0.00000 BOTH false false 0 3}
+afterCreatedOrderPriceRecords are empty 
+df view =>  [4x4] DataFrame
+
+    Symbol   DateTime                       UnixTime    Price
+ 0: ETHBUSD  Thu Nov 03 15:10:17 +0000 2022 1843e0afa8d 1550.030000
+ 1: ETHBUSD  Thu Nov 03 15:10:18 +0000 2022 1843e0afdc4 1550.090000
+ 2: ETHBUSD  Thu Nov 03 15:10:20 +0000 2022 1843e0b064c 1550.110000
+ 3: ETHBUSD  Thu Nov 03 15:10:21 +0000 2022 1843e0b0a0e 1550.120000
+    <string> <string>                       <string>    <float>
+
+afterCreatedOrderPriceRecords =>  [1x4] DataFrame
+
+    Symbol   DateTime                       UnixTime    Price
+ 0: ETHBUSD  Thu Nov 03 15:10:21 +0000 2022 1843e0b0a0e 1550.120000
+    <string> <string>                       <string>    <float>
+
+created order :  &{ETHBUSD 4484885 ly1sFi3fvi53HpGjHqdgiR 0 0.010 0 0 false NEW 0 GTC MARKET SELL 1667488221976 CONTRACT_PRICE   0.00000 BOTH false false 1 4}
+creteadSellOrder  &{ETHBUSD 4484885 ly1sFi3fvi53HpGjHqdgiR 0 0.010 0 0 false NEW 0 GTC MARKET SELL 1667488221976 CONTRACT_PRICE   0.00000 BOTH false false 1 4}
+df view =>  [5x4] DataFrame
+
+    Symbol   DateTime                       UnixTime    Price
+ 0: ETHBUSD  Thu Nov 03 15:10:17 +0000 2022 1843e0afa8d 1550.030000
+ 1: ETHBUSD  Thu Nov 03 15:10:18 +0000 2022 1843e0afdc4 1550.090000
+ 2: ETHBUSD  Thu Nov 03 15:10:20 +0000 2022 1843e0b064c 1550.110000
+ 3: ETHBUSD  Thu Nov 03 15:10:21 +0000 2022 1843e0b0a0e 1550.120000
+ 4: ETHBUSD  Thu Nov 03 15:10:22 +0000 2022 1843e0b0d41 1550.110000
+    <string> <string>                       <string>    <float>
+
+result :  5.161190428570883e-05  entry:  -1e-07
+created order :  &{ETHBUSD 4484886 WPM2sPxvzvDYC0YRh6td9u 0 0.010 0 0 false NEW 0 GTC MARKET BUY 1667488222653 CONTRACT_PRICE   0.00000 BOTH false false 2 5}
+creteadBuyOrder  &{ETHBUSD 4484886 WPM2sPxvzvDYC0YRh6td9u 0 0.010 0 0 false NEW 0 GTC MARKET BUY 1667488222653 CONTRACT_PRICE   0.00000 BOTH false false 2 5}
+afterCreatedOrderPriceRecords are empty 
+df view =>  [6x4] DataFrame
+
+    Symbol   DateTime                       UnixTime    Price
+ 0: ETHBUSD  Thu Nov 03 15:10:17 +0000 2022 1843e0afa8d 1550.030000
+ 1: ETHBUSD  Thu Nov 03 15:10:18 +0000 2022 1843e0afdc4 1550.090000
+ 2: ETHBUSD  Thu Nov 03 15:10:20 +0000 2022 1843e0b064c 1550.110000
+ 3: ETHBUSD  Thu Nov 03 15:10:21 +0000 2022 1843e0b0a0e 1550.120000
+ 4: ETHBUSD  Thu Nov 03 15:10:22 +0000 2022 1843e0b0d41 1550.110000
+ 5: ETHBUSD  Thu Nov 03 15:10:23 +0000 2022 1843e0b10b3 1549.760000
+    <string> <string>                       <string>    <float>
+
+afterCreatedOrderPriceRecords =>  [1x4] DataFrame
+
+    Symbol   DateTime                       UnixTime    Price
+ 0: ETHBUSD  Thu Nov 03 15:10:23 +0000 2022 1843e0b10b3 1549.760000
+    <string> <string>                       <string>    <float>
+
+created order :  &{ETHBUSD 4484887 dSp9KAt4hnVoKCm45yg8sx 0 0.010 0 0 false NEW 0 GTC MARKET SELL 1667488223530 CONTRACT_PRICE   0.00000 BOTH false false 3 6}
+creteadSellOrder  &{ETHBUSD 4484887 dSp9KAt4hnVoKCm45yg8sx 0 0.010 0 0 false NEW 0 GTC MARKET SELL 1667488223530 CONTRACT_PRICE   0.00000 BOTH false false 3 6}
+df view =>  [7x4] DataFrame
+
+    Symbol   DateTime                       UnixTime    Price
+ 0: ETHBUSD  Thu Nov 03 15:10:17 +0000 2022 1843e0afa8d 1550.030000
+ 1: ETHBUSD  Thu Nov 03 15:10:18 +0000 2022 1843e0afdc4 1550.090000
+ 2: ETHBUSD  Thu Nov 03 15:10:20 +0000 2022 1843e0b064c 1550.110000
+ 3: ETHBUSD  Thu Nov 03 15:10:21 +0000 2022 1843e0b0a0e 1550.120000
+ 4: ETHBUSD  Thu Nov 03 15:10:22 +0000 2022 1843e0b0d41 1550.110000
+ 5: ETHBUSD  Thu Nov 03 15:10:23 +0000 2022 1843e0b10b3 1549.760000
+ 6: ETHBUSD  Thu Nov 03 15:10:26 +0000 2022 1843e0b1b23 1549.760000
+    <string> <string>                       <string>    <float>
+
+result :  -0.00017419017696429506  entry:  -1e-07
+df view =>  [8x4] DataFrame
+
+    Symbol   DateTime                       UnixTime    Price
+ 0: ETHBUSD  Thu Nov 03 15:10:17 +0000 2022 1843e0afa8d 1550.030000
+ 1: ETHBUSD  Thu Nov 03 15:10:18 +0000 2022 1843e0afdc4 1550.090000
+ 2: ETHBUSD  Thu Nov 03 15:10:20 +0000 2022 1843e0b064c 1550.110000
+ 3: ETHBUSD  Thu Nov 03 15:10:21 +0000 2022 1843e0b0a0e 1550.120000
+ 4: ETHBUSD  Thu Nov 03 15:10:22 +0000 2022 1843e0b0d41 1550.110000
+ 5: ETHBUSD  Thu Nov 03 15:10:23 +0000 2022 1843e0b10b3 1549.760000
+ 6: ETHBUSD  Thu Nov 03 15:10:26 +0000 2022 1843e0b1b23 1549.760000
+ 7: ETHBUSD  Thu Nov 03 15:10:28 +0000 2022 1843e0b2353 1549.500000
+    <string> <string>                       <string>    <float>
+
+result :  -0.0003419288658929043  entry:  -1e-07
+df view =>  [9x4] DataFrame
+
+    Symbol   DateTime                       UnixTime    Price
+ 0: ETHBUSD  Thu Nov 03 15:10:17 +0000 2022 1843e0afa8d 1550.030000
+ 1: ETHBUSD  Thu Nov 03 15:10:18 +0000 2022 1843e0afdc4 1550.090000
+ 2: ETHBUSD  Thu Nov 03 15:10:20 +0000 2022 1843e0b064c 1550.110000
+ 3: ETHBUSD  Thu Nov 03 15:10:21 +0000 2022 1843e0b0a0e 1550.120000
+ 4: ETHBUSD  Thu Nov 03 15:10:22 +0000 2022 1843e0b0d41 1550.110000
+ 5: ETHBUSD  Thu Nov 03 15:10:23 +0000 2022 1843e0b10b3 1549.760000
+ 6: ETHBUSD  Thu Nov 03 15:10:26 +0000 2022 1843e0b1b23 1549.760000
+ 7: ETHBUSD  Thu Nov 03 15:10:28 +0000 2022 1843e0b2353 1549.500000
+ 8: ETHBUSD  Thu Nov 03 15:10:29 +0000 2022 1843e0b26de 1549.350000
+    <string> <string>                       <string>    <float>
+
+result :  -0.0004387011864286361  entry:  -1e-07
+df view =>  [10x4] DataFrame
+
+    Symbol   DateTime                       UnixTime    Price
+ 0: ETHBUSD  Thu Nov 03 15:10:17 +0000 2022 1843e0afa8d 1550.030000
+ 1: ETHBUSD  Thu Nov 03 15:10:18 +0000 2022 1843e0afdc4 1550.090000
+ 2: ETHBUSD  Thu Nov 03 15:10:20 +0000 2022 1843e0b064c 1550.110000
+ 3: ETHBUSD  Thu Nov 03 15:10:21 +0000 2022 1843e0b0a0e 1550.120000
+ 4: ETHBUSD  Thu Nov 03 15:10:22 +0000 2022 1843e0b0d41 1550.110000
+ 5: ETHBUSD  Thu Nov 03 15:10:23 +0000 2022 1843e0b10b3 1549.760000
+ 6: ETHBUSD  Thu Nov 03 15:10:26 +0000 2022 1843e0b1b23 1549.760000
+ 7: ETHBUSD  Thu Nov 03 15:10:28 +0000 2022 1843e0b2353 1549.500000
+ 8: ETHBUSD  Thu Nov 03 15:10:29 +0000 2022 1843e0b26de 1549.350000
+ 9: ETHBUSD  Thu Nov 03 15:10:30 +0000 2022 1843e0b2c3c 1549.110000
+    <string> <string>                       <string>    <float>
+
+result :  -0.0005935368992858736  entry:  -1e-07
+df view =>  [11x4] DataFrame
+
+    Symbol   DateTime                       UnixTime    Price
+ 0: ETHBUSD  Thu Nov 03 15:10:17 +0000 2022 1843e0afa8d 1550.030000
+ 1: ETHBUSD  Thu Nov 03 15:10:18 +0000 2022 1843e0afdc4 1550.090000
+ 2: ETHBUSD  Thu Nov 03 15:10:20 +0000 2022 1843e0b064c 1550.110000
+ 3: ETHBUSD  Thu Nov 03 15:10:21 +0000 2022 1843e0b0a0e 1550.120000
+ 4: ETHBUSD  Thu Nov 03 15:10:22 +0000 2022 1843e0b0d41 1550.110000
+ 5: ETHBUSD  Thu Nov 03 15:10:23 +0000 2022 1843e0b10b3 1549.760000
+ 6: ETHBUSD  Thu Nov 03 15:10:26 +0000 2022 1843e0b1b23 1549.760000
+ 7: ETHBUSD  Thu Nov 03 15:10:28 +0000 2022 1843e0b2353 1549.500000
+ 8: ETHBUSD  Thu Nov 03 15:10:29 +0000 2022 1843e0b26de 1549.350000
+ 9: ETHBUSD  Thu Nov 03 15:10:30 +0000 2022 1843e0b2c3c 1549.110000
+    ...      ...                            ...         ...
+    <string> <string>                       <string>    <float>
+
+result :  -0.0007032121958929771  entry:  -1e-07
