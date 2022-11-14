@@ -1,0 +1,13 @@
+package apperror
+
+const (
+	// ErrMessageInternalServerError ...
+	// a default message when got an internal server error
+	ErrMessageInternalServerError string = "an internal server error occurred"
+	// ErrMessageServiceUnavailable ...
+	ErrMessageServiceUnavailable string = "The service is unvailable."
+	// ErrMessageUnexpectedError ...
+	ErrMessageUnexpectedError string = "unexpected error occurred"
+	// ErrMessageInvalidParameter ...
+	ErrMessageInvalidParameter string = "invalid parameter"
+)

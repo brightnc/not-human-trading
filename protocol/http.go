@@ -7,7 +7,7 @@ import (
 
 	"github.com/brightnc/not-human-trading/config"
 	"github.com/brightnc/not-human-trading/internal/core/service"
-	"github.com/brightnc/not-human-trading/internal/handler"
+	"github.com/brightnc/not-human-trading/internal/handler/httphdl"
 	"github.com/brightnc/not-human-trading/internal/repository"
 	"github.com/brightnc/not-human-trading/pkg/validators"
 
@@ -33,7 +33,7 @@ func ServeREST() error {
 	repo := repository.NewPostgres()
 	svc := service.New(repo)
 	vld := validators.New()
-	hdl := handler.NewHttp(svc, vld)
+	hdl := httphdl.NewHTTPHandler(svc, vld)
 
 	// example
 	app.Get("/", hdl.SomeHandler)

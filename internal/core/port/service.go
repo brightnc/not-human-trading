@@ -15,5 +15,8 @@ import (
 */
 
 type Service interface {
-	SomeBusinessLogic(request domain.BusinessLogicRequest) error
+	IndicatorAdjustment(in domain.IndicatorConfig) error
+	BotAdjusment() error
+	BotStarting() error
+	BotStoping() error
 }

@@ -1,5 +1,7 @@
 package port
 
+import "github.com/brightnc/not-human-trading/internal/core/domain"
+
 /*
 	|--------------------------------------------------------------------------
 	| Application Port
@@ -11,5 +13,8 @@ package port
 */
 
 type Repository interface {
-	SomeFunction() error
+	PlaceBid() error
+	PlaceAsk() error
+	Cancel() error
+	RetrieveKLines() (domain.Quote, error)
 }
