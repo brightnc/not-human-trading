@@ -15,8 +15,8 @@ import (
 */
 
 type Service interface {
-	IndicatorAdjustment(in domain.IndicatorConfig) error
-	BotAdjusment() error
-	BotStarting() error
-	BotStoping() error
+	UpdateIndicator(in domain.IndicatorConfig) error
+	UpdateBot() error
+	StartBot() error
+	StopBot() error
 }

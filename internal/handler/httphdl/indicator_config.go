@@ -6,6 +6,7 @@ import (
 	"github.com/brightnc/not-human-trading/internal/core/port"
 	"github.com/brightnc/not-human-trading/internal/handler/httphdl/dto"
 	"github.com/brightnc/not-human-trading/pkg/apperror"
+	"github.com/brightnc/not-human-trading/pkg/appresponse"
 	"github.com/brightnc/not-human-trading/pkg/logger"
 	"github.com/brightnc/not-human-trading/pkg/validators"
 	"github.com/gofiber/fiber/v2"
@@ -34,7 +35,7 @@ func NewHTTPHandler(svc port.Service, validators validators.Validator) *HTTPHand
 	|
 */
 
-func (hdl *HTTPHandler) SomeHandler(c *fiber.Ctx) error {
+func (hdl *HTTPHandler) UpdateIndicator(c *fiber.Ctx) error {
 	var request dto.IndicatorConfigRequest
 
 	/*
@@ -69,7 +70,7 @@ func (hdl *HTTPHandler) SomeHandler(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(apperror.NewInvalidaParameterError())
 	}
 
-	err = hdl.svc.IndicatorAdjustment(request.ToIndicatorConfigDomain())
+	err = hdl.svc.UpdateIndicator(request.ToIndicatorConfigDomain())
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
@@ -90,7 +91,7 @@ func (hdl *HTTPHandler) validateBody(body interface{}) error {
 
 func (hdl *HTTPHandler) responseError(err error, c *fiber.Ctx) error {
 	if e, ok := apperror.IsAppError(err); ok {
-		return c.Status(appresponse.HTTPErrorStatus[e.Code]).JSON(appresponse.ResponseError(string(e.Message)))
+		return c.Status(appresponse.HTTPErrorStatus[e.Code]).JSON(appresponse.Error(string(e.Message)))
 	}
-	return c.Status(http.StatusInternalServerError).JSON(appresponse.ResponseError(err.Error()))
+	return c.Status(http.StatusInternalServerError).JSON(appresponse.Error(err.Error()))
 }

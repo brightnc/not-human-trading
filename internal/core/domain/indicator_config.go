@@ -27,7 +27,8 @@ type MACDConfig struct {
 }
 
 type EMAConfig struct {
-	Period int `json:"period"`
+	FastPeriod int `json:"fast_period"`
+	SlowPeriod int `json:"slow_period"`
 }
 
 type SupertrendConfig struct {

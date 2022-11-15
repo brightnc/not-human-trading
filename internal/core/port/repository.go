@@ -12,9 +12,13 @@ import "github.com/brightnc/not-human-trading/internal/core/domain"
 	|
 */
 
-type Repository interface {
+type Exchange interface {
 	PlaceBid() error
 	PlaceAsk() error
 	Cancel() error
 	RetrieveKLines() (domain.Quote, error)
+}
+
+type Indicator interface {
+	UpdateIndicator(domain.IndicatorConfig) error
 }

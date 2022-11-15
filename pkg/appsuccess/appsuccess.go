@@ -19,30 +19,6 @@ func code(code successCode) string {
 func OK() AppSuccess {
 	return AppSuccess{
 		Code:    code(ok),
-		Message: ErrMessageInternalServerError,
-	}
-}
-
-// NewServiceUnexpectedError ...
-func NewServiceUnexpectedError() AppError {
-	return AppError{
-		Message: ErrMessageUnexpectedError,
-		Code:    ErrCodeUnexpectedError,
-	}
-}
-
-// NewServiceUnavailableError ...
-func NewServiceUnavailableError() AppError {
-	return AppError{
-		Message: ErrMessageServiceUnavailable,
-		Code:    ErrCodeServiceUnavailable,
-	}
-}
-
-// NewInvalidaParameterError ...
-func NewInvalidaParameterError() AppError {
-	return AppError{
-		Message: ErrMessageInvalidParameter,
-		Code:    ErrCodeInvalidParameter,
+		Message: string(success),
 	}
 }

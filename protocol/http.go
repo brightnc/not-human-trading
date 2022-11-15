@@ -30,13 +30,14 @@ func ServeREST() error {
 		DisableKeepalive: false,
 	})
 
-	repo := repository.NewPostgres()
-	svc := service.New(repo)
+	biananceRepo := repository.NewBinanceExchange()
+	indicatorRepo := repository.NewIndicator()
+	svc := service.NewService(biananceRepo, indicatorRepo)
 	vld := validators.New()
 	hdl := httphdl.NewHTTPHandler(svc, vld)
 
 	// example
-	app.Get("/", hdl.SomeHandler)
+	app.Put("/indicators", hdl.UpdateIndicator)
 
 	// gracefully shuts down  ...
 	c := make(chan os.Signal, 1)

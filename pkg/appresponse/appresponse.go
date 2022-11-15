@@ -1,30 +1,33 @@
 package appresponse
 
 type responseSuccess struct {
-	Code  int          `json:"code"`
-	Data  interface{}  `json:"data"`
-	Debug *interface{} `json:"debug,omitempty"`
+	Code    string      `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+	//Debug *interface{} `json:"debug,omitempty"`
 }
 
 type responseError struct {
-	Status  bool   `json:"status" example:"false"`
-	Message string `json:"message" example:"example error message"`
+	Code    string `json:"int"`
+	Message string `json:"message"`
 }
 
 func Success(data interface{}) responseSuccess {
-	if result == nil {
+	if data == nil {
 		type Empty struct{}
-		result = Empty{}
+		data = Empty{}
 	}
+
 	return responseSuccess{
-		Code: true,
-		Data: data,
+		Code:    "BOT-2000",
+		Message: "Success.",
+		Data:    data,
 	}
 }
 
 func Error(message string) responseError {
 	return responseError{
-		Status:  false,
+		Code:    "BOT-5000",
 		Message: message,
 	}
 }
