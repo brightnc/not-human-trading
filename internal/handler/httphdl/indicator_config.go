@@ -63,7 +63,6 @@ func (hdl *HTTPHandler) UpdateIndicator(c *fiber.Ctx) error {
 		| before putting them into the business logic.
 		|
 	*/
-
 	err = hdl.validateBody(&request)
 	if err != nil {
 		logger.Error("invalid paramter from payload")

@@ -1,0 +1,28 @@
+{
+    "ema": {
+        "isActive": true,
+        "fastPeriod": 0,
+        "slowPeriod": 0
+    },
+    "macd": {
+        "isActive": true,
+        "emaFastPeriod": 0,
+        "emaSlowPeriod": 0,
+        "signalPeriod": 0
+    },
+    "rsi": {
+        "isActive": true,
+        "period": 0
+    },
+    "sto": {
+        "isActive": false,
+        "kLength": 0,
+        "d": 0,
+        "k": 0
+    },
+    "supertrend": {
+        "isActive": false,
+        "atrPeriod": 0,
+        "multiplier": 0
+    }
+}

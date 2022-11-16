@@ -13,11 +13,13 @@ type IndicatorConfigRequest struct {
 }
 
 type RSIConfig struct {
-	Period int `json:"period"`
+	IsActive bool `json:"is_active"`
+	Period   int  `json:"period"`
 }
 
 type STOConfig struct {
-	Length int `json:"length"`
+	IsActive bool `json:"is_active"`
+	Length   int  `json:"length"`
 	// we fixed this value to be 1, improvement is on our plan to support client to customization of this field in the future
 	D int `json:"d"`
 	// we fixed this value to be 3, improvement is on our plan to support client to customization of this field in the future
@@ -25,19 +27,22 @@ type STOConfig struct {
 }
 
 type MACDConfig struct {
-	EMAFastPeriod int `json:"ema_fast_period"`
-	EMASlowPeriod int `json:"ema_slow_period"`
-	SignalPeriod  int `json:"signal_period"`
+	IsActive      bool `json:"is_active"`
+	EMAFastPeriod int  `json:"ema_fast_period"`
+	EMASlowPeriod int  `json:"ema_slow_period"`
+	SignalPeriod  int  `json:"signal_period"`
 }
 
 type EMAConfig struct {
-	FastPeriod int `json:"fast_period"`
-	SlowPeriod int `json:"slow_period"`
+	IsActive   bool `json:"is_active"`
+	FastPeriod int  `json:"fast_period"`
+	SlowPeriod int  `json:"slow_period"`
 }
 
 type SupertrendConfig struct {
-	ATRPeriod  int `json:"atr_period"`
-	Multiplier int `json:"multiplier"`
+	IsActive   bool `json:"is_active"`
+	ATRPeriod  int  `json:"atr_period"`
+	Multiplier int  `json:"multiplier"`
 }
 
 // ToIndicatorConfigDomain ...
