@@ -7,8 +7,8 @@ import (
 
 	"github.com/brightnc/not-human-trading/config"
 	"github.com/brightnc/not-human-trading/internal/handler/httphdl"
-
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 /*
@@ -27,6 +27,7 @@ func ServeREST() error {
 		DisableKeepalive: false,
 	})
 
+	srv.Use(cors.ConfigDefault)
 	hdl := httphdl.NewHTTPHandler(app.svc, app.pkg.vld)
 	// example
 	srv.Put("/indicators", hdl.UpdateIndicator)
