@@ -29,8 +29,10 @@ func ServeREST() error {
 
 	srv.Use(cors.New(cors.ConfigDefault))
 	hdl := httphdl.NewHTTPHandler(app.svc, app.pkg.vld)
+	v1Group := srv.Group("/v1")
+	indicatorsV1Group := v1Group.Group("/indicators")
 	// example
-	srv.Put("/indicators", hdl.UpdateIndicator)
+	indicatorsV1Group.Put("", hdl.UpdateIndicator)
 
 	// gracefully shuts down  ...
 	c := make(chan os.Signal, 1)
