@@ -1,4 +1,4 @@
-GO_BINARY_NAME=kkp-api
+GO_BINARY_NAME=not-human-trading
 VERSION=$(shell git describe --tags || git rev-parse --short HEAD || echo "unknown version")
 LDFLAGS+= -X "kkp-api/cmd/cmds.Version=$(VERSION)"
 LDFLAGS+= -X "kkp-api/cmd/cmds.GoVersion=$(shell go version | sed -r 's/go version go(.*)\ .*/\1/')"

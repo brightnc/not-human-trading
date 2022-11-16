@@ -3,6 +3,7 @@ package protocol
 import (
 	"github.com/brightnc/not-human-trading/config"
 	"github.com/brightnc/not-human-trading/internal/core/service"
+	"github.com/brightnc/not-human-trading/internal/repository"
 	"github.com/brightnc/not-human-trading/pkg/logger"
 	"github.com/brightnc/not-human-trading/pkg/validators"
 )
@@ -17,18 +18,20 @@ type application struct {
 }
 
 type packages struct {
-	validator validators.Validator
+	vld validators.Validator
 }
 
 func init() {
-	logger.Init()
+	logger.Init("BOT-XXX")
 	config.Init()
+	biananceRepo := repository.NewBinanceExchange()
+	indicatorRepo := repository.NewIndicator()
 	packages := packages{
-		validator: validators.New(),
+		vld: validators.New(),
 	}
 	//todo: inject repository into the service
 	app = &application{
-		svc: service.New(nil),
+		svc: service.NewService(biananceRepo, indicatorRepo),
 		pkg: packages,
 	}
 }

@@ -6,10 +6,7 @@ import (
 	"os/signal"
 
 	"github.com/brightnc/not-human-trading/config"
-	"github.com/brightnc/not-human-trading/internal/core/service"
 	"github.com/brightnc/not-human-trading/internal/handler/httphdl"
-	"github.com/brightnc/not-human-trading/internal/repository"
-	"github.com/brightnc/not-human-trading/pkg/validators"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -26,18 +23,13 @@ import (
 
 // The example to serve REST
 func ServeREST() error {
-	app := fiber.New(fiber.Config{
+	srv := fiber.New(fiber.Config{
 		DisableKeepalive: false,
 	})
 
-	biananceRepo := repository.NewBinanceExchange()
-	indicatorRepo := repository.NewIndicator()
-	svc := service.NewService(biananceRepo, indicatorRepo)
-	vld := validators.New()
-	hdl := httphdl.NewHTTPHandler(svc, vld)
-
+	hdl := httphdl.NewHTTPHandler(app.svc, app.pkg.vld)
 	// example
-	app.Put("/indicators", hdl.UpdateIndicator)
+	srv.Put("/indicators", hdl.UpdateIndicator)
 
 	// gracefully shuts down  ...
 	c := make(chan os.Signal, 1)
@@ -45,13 +37,13 @@ func ServeREST() error {
 	go func() {
 		_ = <-c
 		log.Println("Gracefully shutting down ...")
-		err := app.Shutdown()
+		err := srv.Shutdown()
 		if err != nil {
 			log.Println(err)
 		}
 		os.Exit(0)
 	}()
-	err := app.Listen(":" + config.GetConfig().App.HTTPPort)
+	err := srv.Listen(":" + config.GetConfig().App.HTTPPort)
 	if err != nil {
 		return err
 	}
