@@ -27,7 +27,7 @@ func ServeREST() error {
 		DisableKeepalive: false,
 	})
 
-	srv.Use(cors.ConfigDefault)
+	srv.Use(cors.New(cors.ConfigDefault))
 	hdl := httphdl.NewHTTPHandler(app.svc, app.pkg.vld)
 	// example
 	srv.Put("/indicators", hdl.UpdateIndicator)
