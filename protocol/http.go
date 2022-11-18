@@ -36,7 +36,7 @@ func ServeREST() error {
 	// example
 	indicatorsV1Group.Put("", hdl.UpdateIndicator)
 	configsV1Group.Post("", hdl.UpdateBotConfig)
-	orderV1Group.Put("", nil)
+	orderV1Group.Put("", hdl.UpdateOrder)
 
 	// gracefully shuts down  ...
 	c := make(chan os.Signal, 1)
