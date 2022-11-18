@@ -106,7 +106,7 @@ func (r *Binance) RetrieveKLines(symbol, startDate, endDate string, period domai
 	for startBar.Before(end) && (errs == nil) {
 		wg.Add(1)
 		fetchingRound++
-		go func(sequenceNumber int, wg *sync.WaitGroup) {
+		go func(startBar, endBar time.Time, sequenceNumber int, wg *sync.WaitGroup) {
 			q, err := r.retrieveKlines(symbol, interval, startBar, endBar)
 			if err != nil {
 				fmt.Println("error while featching kilines from Binance")
@@ -124,7 +124,7 @@ func (r *Binance) RetrieveKLines(symbol, startDate, endDate string, period domai
 			}
 			r.mutext.Unlock()
 			defer wg.Done()
-		}(fetchingRound, &wg)
+		}(startBar, endBar, fetchingRound, &wg)
 
 		startBar = endBar.Add(step)
 		endBar = startBar.Add(time.Duration(maxBars) * step)
