@@ -113,7 +113,6 @@ func (r *Binance) RetrieveKLines(symbol, startDate, endDate string, period domai
 				errs = err
 				return
 			}
-			fmt.Println("q from binanace ->>> ", q)
 			r.mutext.Lock()
 			quoteMapper[sequenceNumber] = quote.Quote{
 				Date:   q.Date,
@@ -140,7 +139,6 @@ func (r *Binance) RetrieveKLines(symbol, startDate, endDate string, period domai
 		appQuote.Close = append(appQuote.Close, quoteMapper[i].Close...)
 		appQuote.Volume = append(appQuote.Volume, quoteMapper[i].Volume...)
 	}
-	fmt.Println("appQuotes ->>> ", appQuote)
 	return appQuote, errs
 }
 
@@ -150,10 +148,15 @@ func (r *Binance) retrieveKlines(symbol, interval string, startBar, endBar time.
 		interval,
 		startBar.UnixNano()/1000000,
 		endBar.UnixNano()/1000000)
+	fmt.Println("featching URL ->>> ", url)
 	client := &http.Client{Timeout: quote.ClientTimeout}
-	req, _ := http.NewRequest("GET", url, nil)
-	resp, err := client.Do(req)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		fmt.Printf("binance error: %v\n", err)
+		return quote.Quote{}, err
+	}
 
+	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Printf("binance error: %v\n", err)
 		return quote.Quote{}, err
