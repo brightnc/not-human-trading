@@ -22,3 +22,7 @@ type Exchange interface {
 type Indicator interface {
 	UpdateIndicator(domain.IndicatorConfig) error
 }
+
+type BotConfig interface {
+	UpdateBotConfig(domain.BotConfig) error
+}

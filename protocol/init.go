@@ -26,12 +26,13 @@ func init() {
 	config.Init()
 	biananceRepo := repository.NewBinanceExchange()
 	indicatorRepo := repository.NewIndicator()
+	botConfigRepo := repository.NewBotConfigKey()
 	packages := packages{
 		vld: validators.New(),
 	}
 	//todo: inject repository into the service
 	app = &application{
-		svc: service.NewService(biananceRepo, indicatorRepo),
+		svc: service.NewService(biananceRepo, indicatorRepo, botConfigRepo),
 		pkg: packages,
 	}
 }

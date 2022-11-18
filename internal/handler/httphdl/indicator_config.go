@@ -94,3 +94,25 @@ func (hdl *HTTPHandler) responseError(err error, c *fiber.Ctx) error {
 	}
 	return c.Status(http.StatusInternalServerError).JSON(appresponse.Error(err.Error()))
 }
+
+func (hdl *HTTPHandler) UpdateBotConfig(c *fiber.Ctx) error {
+	var request dto.BotConfigRequest
+
+	err := c.BodyParser(&request)
+	if err != nil {
+		logger.Error("cannot parese request from payload")
+		return c.Status(fiber.StatusBadRequest).JSON(apperror.NewInvalidaParameterError())
+	}
+
+	err = hdl.validateBody(&request)
+	if err != nil {
+		logger.Error("invalid paramter from payload")
+		return c.Status(fiber.StatusBadRequest).JSON(apperror.NewInvalidaParameterError())
+	}
+
+	err = hdl.svc.UpdateBotConfig(request.ToBotConfigDomain())
+	if err != nil {
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+	return c.SendStatus(fiber.StatusOK)
+}

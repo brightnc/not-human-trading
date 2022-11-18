@@ -52,17 +52,28 @@ type Service struct {
 	openOrderQuantiy float64
 	exchange         port.Exchange
 	indicator        port.Indicator
+	botConfig        port.BotConfig
 }
 
-func NewService(exchangeRepo port.Exchange, indicatorRepo port.Indicator) *Service {
+func NewService(exchangeRepo port.Exchange, indicatorRepo port.Indicator, botRepo port.BotConfig) *Service {
 	return &Service{
 		exchange:  exchangeRepo,
 		indicator: indicatorRepo,
+		botConfig: botRepo,
 	}
 }
 
 func (svc *Service) UpdateIndicator(in domain.IndicatorConfig) error {
 	err := svc.indicator.UpdateIndicator(in)
+	if err != nil {
+		// TODO: handle error
+		panic(err)
+	}
+	return err
+}
+
+func (svc *Service) UpdateBotConfig(bot domain.BotConfig) error {
+	err := svc.botConfig.UpdateBotConfig(bot)
 	if err != nil {
 		// TODO: handle error
 		panic(err)

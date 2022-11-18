@@ -31,8 +31,10 @@ func ServeREST() error {
 	hdl := httphdl.NewHTTPHandler(app.svc, app.pkg.vld)
 	v1Group := srv.Group("/v1")
 	indicatorsV1Group := v1Group.Group("/indicators")
+	botConfigV1Group := v1Group.Group("/keys")
 	// example
 	indicatorsV1Group.Put("", hdl.UpdateIndicator)
+	botConfigV1Group.Post("", hdl.UpdateBotConfig)
 
 	// gracefully shuts down  ...
 	c := make(chan os.Signal, 1)
