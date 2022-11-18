@@ -44,9 +44,23 @@ func (svc *Service) StopBot() {
 
 func (svc *Service) startBot(botConfig domain.BotConfig) {
 	lastExecutionTime := time.Now()
+	turnTimer := time.Now().Add(time.Second * 60)
+	turnCounter := 0
 	for !svc.hasStopSignal {
+
+		if time.Now().After(turnTimer) {
+			turnCounter = 0
+			fmt.Println("Clear turn counter : ", turnCounter)
+			turnTimer = time.Now().Add(time.Second * 60)
+		}
+		if turnCounter == 12 {
+			fmt.Println("maximun turn reached ")
+			time.Sleep(time.Second)
+
+			continue
+		}
 		// Cooldown excution process...
-		if time.Now().Sub(lastExecutionTime) < time.Duration(time.Second) {
+		if time.Since(lastExecutionTime) < time.Duration(time.Second*5) {
 			time.Sleep(time.Millisecond * 500)
 			continue
 		}
@@ -105,6 +119,7 @@ func (svc *Service) startBot(botConfig domain.BotConfig) {
 			svc.hasCreatedOrder = true
 		}
 		lastExecutionTime = time.Now()
+		turnCounter++
 	}
 	fmt.Println("bot has been stopped")
 

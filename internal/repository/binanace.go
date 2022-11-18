@@ -133,7 +133,6 @@ func (r *Binance) RetrieveKLines(symbol, startDate, endDate string, period domai
 	// block until done
 	wg.Wait()
 	for i := range roundRange {
-		fmt.Println("fetching round =  , i = ", fetchingRound, i)
 		appQuote.Date = append(appQuote.Date, quoteMapper[i].Date...)
 		appQuote.Open = append(appQuote.Open, quoteMapper[i].Open...)
 		appQuote.High = append(appQuote.High, quoteMapper[i].High...)
@@ -170,6 +169,8 @@ func (r *Binance) retrieveKlines(symbol, interval string, startBar, endBar time.
 	err = json.Unmarshal(contents, &bars)
 	if err != nil {
 		fmt.Printf("binance error: %v\n", err)
+		fmt.Printf("res binance: %s\n", string(contents))
+
 		return quote.Quote{}, err
 	}
 
