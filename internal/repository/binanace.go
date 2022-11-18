@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/brightnc/not-human-trading/internal/core/domain"
@@ -97,8 +98,10 @@ func (r *Binance) RetrieveKLines(symbol, startDate, endDate string, period domai
 	quoteMapper := make(map[int]quote.Quote)
 	fetchingRound := 0
 	var errs error
+	var wg sync.WaitGroup
 	for startBar.Before(end) && (errs == nil) {
-		go func(sequenceNumber int) {
+		wg.Add(1)
+		go func(sequenceNumber int, wg *sync.WaitGroup) {
 			q, err := r.retrieveKlines(symbol, interval, startBar, endBar)
 			if err != nil {
 				fmt.Println("error while featching kilines from Binance")
@@ -113,11 +116,14 @@ func (r *Binance) RetrieveKLines(symbol, startDate, endDate string, period domai
 				Close:  q.Close,
 				Volume: q.Volume,
 			}
-		}(fetchingRound)
+			defer wg.Done()
+		}(fetchingRound, &wg)
 		fetchingRound++
 		startBar = endBar.Add(step)
 		endBar = startBar.Add(time.Duration(maxBars) * step)
 	}
+	// block until done
+	wg.Wait()
 	for i := 0; i < fetchingRound; i++ {
 		appQuote.Date = append(appQuote.Date, quoteMapper[i].Date...)
 		appQuote.Open = append(appQuote.Open, quoteMapper[i].Open...)
