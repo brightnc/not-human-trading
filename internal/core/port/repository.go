@@ -19,14 +19,7 @@ type Exchange interface {
 	RetrieveKLines() (domain.Quote, error)
 }
 
-type Indicator interface {
-	UpdateIndicator(domain.IndicatorConfig) error
-}
-
 type BotConfig interface {
 	UpdateBotConfig(domain.BotConfig) error
-}
-
-type BotOrder interface {
-	UpdateBotOrder(domain.BotOrder) error
+	UpdateBotExchange(in domain.BotExchange) error
 }

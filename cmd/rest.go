@@ -1,4 +1,4 @@
-package cmds
+package cmd
 
 import (
 	"github.com/brightnc/not-human-trading/protocol"

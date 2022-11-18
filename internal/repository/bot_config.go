@@ -4,41 +4,95 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"path/filepath"
-	"runtime"
 
 	"github.com/brightnc/not-human-trading/internal/core/domain"
 )
 
 type botConfig struct {
-	ApiKey    string `json:"api_key"`
+	EMA        emaConfig        `json:"ema"`
+	MACD       macdConfig       `json:"macd"`
+	RSI        rsiConfig        `json:"rsi"`
+	STO        stoConfig        `json:"sto"`
+	Supertrend supertrendConfig `json:"supertrend"`
+	Order      botOrder         `json:"bot_order"`
+	Timeframe  string           `json:"timeframe"`
+}
+
+type emaConfig struct {
+	IsActive   bool `json:"isActive"`
+	FastPeriod int  `json:"fastPeriod"`
+	SlowPeriod int  `json:"slowPeriod"`
+}
+
+type macdConfig struct {
+	IsActive      bool `json:"isActive"`
+	EMAFastPeriod int  `json:"emaFastPeriod"`
+	EMASlowPeriod int  `json:"emaSlowPeriod"`
+	SignalPeriod  int  `json:"signalPeriod"`
+}
+
+type rsiConfig struct {
+	IsActive bool `json:"isActive"`
+	Period   int  `json:"period"`
+}
+
+type stoConfig struct {
+	IsActive bool `json:"isActive"`
+	Length   int  `json:"kLength"`
+
+	// multiplier
+	D int `json:"d"`
+	K int `json:"k"`
+}
+
+type supertrendConfig struct {
+	IsActive   bool `json:"isActive"`
+	ATRPeriod  int  `json:"atrPeriod"`
+	Multiplier int  `json:"multiplier"`
+}
+
+type botOrder struct {
+	Symbol   string  `json:"sym"`
+	Quantity float64 `json:"qty"`
+}
+
+// -----
+
+type botExchangeConfig struct {
+	APIKey    string `json:"api_key"`
 	SecretKey string `json:"secret_key"`
 }
 
 const (
-	botConfiggFileName = "botKeys.json"
+	botExchangeCofigFileName = "botKeys.json"
+	botConfigFileName        = "config.json"
 )
 
-type BotConfigKey struct{}
+type BotConfig struct{}
 
-func NewBotConfigKey() *BotConfigKey {
-	return &BotConfigKey{}
+func NewBotConfig() *BotConfig {
+	return &BotConfig{}
 }
 
-func (r *BotConfigKey) UpdateBotConfig(bot domain.BotConfig) error {
-	_, fileName, _, _ := runtime.Caller(0)
-	currentDir := filepath.Dir(fileName)
-	fmt.Println(currentDir)
-
-	configFile := fmt.Sprintf("%s/%s", currentDir, botConfiggFileName)
+func (ind *BotConfig) UpdateBotConfig(in domain.BotConfig) error {
+	rootDir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	configFile := fmt.Sprintf("%s/%s", rootDir, botConfigFileName)
 	f, err := os.Create(configFile)
 	if err != nil {
 		// TODO: handle proper error
 		panic(err)
 	}
 	config := botConfig{
-		ApiKey:    bot.ApiKey,
-		SecretKey: bot.SecretKey,
+		EMA:        (emaConfig)(in.EMAConfig),
+		MACD:       (macdConfig)(in.MACDConfig),
+		RSI:        (rsiConfig)(in.RSIConfig),
+		STO:        (stoConfig)(in.STOConfig),
+		Supertrend: (supertrendConfig)(in.SupertrendConfig),
+		Order:      (botOrder)(in.OrderConfig),
+		Timeframe:  in.Timeframe,
 	}
 	configJSON, err := json.Marshal(&config)
 	if err != nil {
@@ -51,6 +105,34 @@ func (r *BotConfigKey) UpdateBotConfig(bot domain.BotConfig) error {
 		panic(err)
 	}
 	defer f.Close()
+	return nil
+}
 
+func (ind *BotConfig) UpdateBotExchange(in domain.BotExchange) error {
+	rootDir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	configFile := fmt.Sprintf("%s/%s", rootDir, botExchangeCofigFileName)
+	f, err := os.Create(configFile)
+	if err != nil {
+		// TODO: handle proper error
+		panic(err)
+	}
+	config := botExchangeConfig{
+		APIKey:    in.APIKey,
+		SecretKey: in.SecretKey,
+	}
+	configJSON, err := json.Marshal(&config)
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = f.Write(configJSON)
+	if err != nil {
+		// TODO: handle proper error
+		panic(err)
+	}
+	defer f.Close()
 	return nil
 }

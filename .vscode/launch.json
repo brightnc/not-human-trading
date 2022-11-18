@@ -12,7 +12,7 @@
             //"port": 8080,
             "debugAdapter": "dlv-dap",
             //"host": "127.0.0.1",
-            "program": "./cmd/main.go",
+            "program": "./main.go",
             "args": ["serve-rest"],
             "envFile": "${workspaceFolder}/.env"
         }

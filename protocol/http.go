@@ -30,13 +30,11 @@ func ServeREST() error {
 	srv.Use(cors.New(cors.ConfigDefault))
 	hdl := httphdl.NewHTTPHandler(app.svc, app.pkg.vld)
 	v1Group := srv.Group("/v1")
-	indicatorsV1Group := v1Group.Group("/indicators")
 	configsV1Group := v1Group.Group("/configs")
-	orderV1Group := v1Group.Group("/orders")
+	exchangesV1Group := v1Group.Group("/exchanges")
 	// example
-	indicatorsV1Group.Put("", hdl.UpdateIndicator)
-	configsV1Group.Post("", hdl.UpdateBotConfig)
-	orderV1Group.Put("", hdl.UpdateOrder)
+	configsV1Group.Put("", hdl.UpdateBotConfig)
+	exchangesV1Group.Put("", hdl.UpdateBotExchangeConfig)
 
 	// gracefully shuts down  ...
 	c := make(chan os.Signal, 1)

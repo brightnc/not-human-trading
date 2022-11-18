@@ -45,8 +45,8 @@ import (
 // 	}
 // }
 
-func (svc *Service) UpdateIndicator(in domain.IndicatorConfig) error {
-	err := svc.indicator.UpdateIndicator(in)
+func (svc *Service) UpdateBotConfig(in domain.BotConfig) error {
+	err := svc.botRepo.UpdateBotConfig(in)
 	if err != nil {
 		// TODO: handle error
 		panic(err)
@@ -54,8 +54,8 @@ func (svc *Service) UpdateIndicator(in domain.IndicatorConfig) error {
 	return err
 }
 
-func (svc *Service) UpdateBotConfig(bot domain.BotConfig) error {
-	err := svc.botConfig.UpdateBotConfig(bot)
+func (svc *Service) UpdateBotExchange(in domain.BotExchange) error {
+	err := svc.botRepo.UpdateBotExchange(in)
 	if err != nil {
 		// TODO: handle error
 		panic(err)

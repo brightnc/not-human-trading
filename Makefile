@@ -1,7 +1,7 @@
 GO_BINARY_NAME=not-human-trading
 VERSION=$(shell git describe --tags || git rev-parse --short HEAD || echo "unknown version")
-LDFLAGS+= -X "kkp-api/cmd/cmds.Version=$(VERSION)"
-LDFLAGS+= -X "kkp-api/cmd/cmds.GoVersion=$(shell go version | sed -r 's/go version go(.*)\ .*/\1/')"
+LDFLAGS+= -X "github.com/brightnc/not-human-trading/cmd.Version=$(VERSION)"
+LDFLAGS+= -X "github.com/brightnc/not-human-trading/cmd.GoVersion=$(shell go version | sed -r 's/go version go(.*)\ .*/\1/')"
 
 init:
 	@echo "== 👩‍🌾 init =="
@@ -48,7 +48,7 @@ build:
 	$(GO) build -ldflags '$(LDFLAGS)' -a -v -o $(GO_BINARY_NAME) main.go
 
 start:
-	go run ./cmd/main.go serve-rest
+	go run ./main.go serve-rest
 
 mock:
 	mockery --output=./mocks/pkgmock --outpkg=pkgmock --dir=./pkg/account --name=Accounter
@@ -58,7 +58,7 @@ mock:
 	mockery --output=./mocks/repomock --outpkg=repomock --dir=./internal/core/port --name=AMQPRepository
 
 swag:
-	swag init -g ./cmd/cmds/rest.go -o ./docs
+	swag init -g ./cmd/rest.go -o ./docs
 
 .PHONY: test
 test:

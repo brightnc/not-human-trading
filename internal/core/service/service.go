@@ -7,21 +7,15 @@ type Service struct {
 	stratagies       map[string][]interface{}
 	openOrderQuantiy float64
 	exchange         port.Exchange
-	indicator        port.Indicator
-	botConfig        port.BotConfig
-	botOrder         port.BotOrder
+	botRepo          port.BotConfig
 }
 
 func NewService(
 	exchangeRepo port.Exchange,
-	indicatorRepo port.Indicator,
-	botConfigRepo port.BotConfig,
-	botOrderRepo port.BotOrder,
+	botRepo port.BotConfig,
 ) *Service {
 	return &Service{
-		exchange:  exchangeRepo,
-		indicator: indicatorRepo,
-		botConfig: botConfigRepo,
-		botOrder:  botOrderRepo,
+		exchange: exchangeRepo,
+		botRepo:  botRepo,
 	}
 }
