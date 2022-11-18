@@ -44,7 +44,7 @@ func (svc *Service) StopBot() {
 
 func (svc *Service) startBot(botConfig domain.BotConfig) {
 	lastExecutionTime := time.Now()
-	for svc.hasStopSignal {
+	for !svc.hasStopSignal {
 		// Cooldown excution process...
 		if time.Now().Sub(lastExecutionTime) < time.Duration(time.Second) {
 			time.Sleep(time.Millisecond * 500)
