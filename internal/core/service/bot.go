@@ -98,6 +98,7 @@ func (svc *Service) startBot(botConfig domain.BotConfig) {
 		if hasSignal && svc.hasCreatedOrder {
 			//TODO: selling
 			fmt.Printf("Selling symbol: %s quantity:  %v @%v", botConfig.OrderConfig.Symbol, botConfig.OrderConfig.Quantity, time.Now().Format(time.RFC3339Nano))
+			svc.hasCreatedOrder = false
 		}
 		if hasSignal && !svc.hasCreatedOrder {
 			// TODO:: buying
