@@ -14,7 +14,9 @@ import (
 	"github.com/markcheno/go-quote"
 )
 
-type Binance struct{}
+type Binance struct {
+	mutext *sync.Mutex
+}
 
 func NewBinanceExchange() *Binance {
 	return &Binance{}
@@ -108,6 +110,7 @@ func (r *Binance) RetrieveKLines(symbol, startDate, endDate string, period domai
 				errs = err
 				return
 			}
+			r.mutext.Lock()
 			quoteMapper[sequenceNumber] = quote.Quote{
 				Date:   q.Date,
 				Open:   q.Open,
@@ -116,6 +119,7 @@ func (r *Binance) RetrieveKLines(symbol, startDate, endDate string, period domai
 				Close:  q.Close,
 				Volume: q.Volume,
 			}
+			r.mutext.Unlock()
 			defer wg.Done()
 		}(fetchingRound, &wg)
 		fetchingRound++

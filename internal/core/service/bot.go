@@ -80,7 +80,7 @@ func (svc *Service) startBot(botConfig domain.BotConfig) {
 				period:   botConfig.EMAConfig.SlowPeriod,
 				priority: 2,
 			}
-			svc.emaSignal(emaFast, emaSlow)
+			hasSignal = svc.emaSignal(emaFast, emaSlow)
 		}
 
 		if botConfig.MACDConfig.IsActive {
