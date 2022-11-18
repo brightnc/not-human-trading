@@ -26,3 +26,7 @@ type Indicator interface {
 type BotConfig interface {
 	UpdateBotConfig(domain.BotConfig) error
 }
+
+type BotOrder interface {
+	UpdateBotOrder(domain.BotOrder) error
+}

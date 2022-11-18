@@ -2,7 +2,6 @@ package service
 
 import (
 	"github.com/brightnc/not-human-trading/internal/core/domain"
-	"github.com/brightnc/not-human-trading/internal/core/port"
 )
 
 /*
@@ -45,23 +44,6 @@ import (
 // 		s.stratagies = append(s.stratagies, domain.SupertrendConfig{ATRPeriod: atrPeriod, Multiplier: multiplier})
 // 	}
 // }
-
-type Service struct {
-	// apply multiple stratagies ...
-	stratagies       map[string][]interface{}
-	openOrderQuantiy float64
-	exchange         port.Exchange
-	indicator        port.Indicator
-	botConfig        port.BotConfig
-}
-
-func NewService(exchangeRepo port.Exchange, indicatorRepo port.Indicator, botRepo port.BotConfig) *Service {
-	return &Service{
-		exchange:  exchangeRepo,
-		indicator: indicatorRepo,
-		botConfig: botRepo,
-	}
-}
 
 func (svc *Service) UpdateIndicator(in domain.IndicatorConfig) error {
 	err := svc.indicator.UpdateIndicator(in)
