@@ -28,13 +28,14 @@ func (svc *Service) StartBot(in domain.BotConfig) error {
 func (svc *Service) StopBot() {
 	svc.stopSignal <- true
 	svc.isBotRunning = false
+	return
 }
 
 func (svc *Service) botHandler(startSignal chan bool, botConfig domain.BotConfig) {
 	for {
 		select {
 		case <-startSignal:
-			svc.startBot(botConfig)
+			go svc.startBot(botConfig)
 		case <-svc.stopSignal:
 			fmt.Println("bot stopping")
 			return
