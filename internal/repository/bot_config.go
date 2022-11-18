@@ -14,7 +14,7 @@ type botConfig struct {
 	RSI        rsiConfig        `json:"rsi"`
 	STO        stoConfig        `json:"sto"`
 	Supertrend supertrendConfig `json:"supertrend"`
-	Order      botOrder         `json:"bot_order"`
+	Order      botOrder         `json:"botOrder"`
 	Timeframe  string           `json:"timeframe"`
 }
 
@@ -59,8 +59,8 @@ type botOrder struct {
 // -----
 
 type botExchangeConfig struct {
-	APIKey    string `json:"api_key"`
-	SecretKey string `json:"secret_key"`
+	APIKey    string `json:"apiKey"`
+	SecretKey string `json:"secretKey"`
 }
 
 const (
