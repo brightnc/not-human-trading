@@ -19,7 +19,9 @@ type Binance struct {
 }
 
 func NewBinanceExchange() *Binance {
-	return &Binance{}
+	return &Binance{
+		mutext: &sync.Mutex{},
+	}
 }
 
 func (r *Binance) PlaceBid() error { return nil }
