@@ -15,8 +15,8 @@ import (
 */
 
 type Service interface {
-	UpdateBotConfig(in domain.BotConfig) error
+	// UpdateBotConfig(in domain.BotConfig) error
 	UpdateBotExchange(in domain.BotExchange) error
-	StartBot() error
-	StopBot() error
+	StartBot(in domain.BotConfig) error
+	StopBot()
 }

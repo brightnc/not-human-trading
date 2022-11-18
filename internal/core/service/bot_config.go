@@ -45,15 +45,6 @@ import (
 // 	}
 // }
 
-func (svc *Service) UpdateBotConfig(in domain.BotConfig) error {
-	err := svc.botRepo.UpdateBotConfig(in)
-	if err != nil {
-		// TODO: handle error
-		panic(err)
-	}
-	return err
-}
-
 func (svc *Service) UpdateBotExchange(in domain.BotExchange) error {
 	err := svc.botRepo.UpdateBotExchange(in)
 	if err != nil {
@@ -62,23 +53,6 @@ func (svc *Service) UpdateBotExchange(in domain.BotExchange) error {
 	}
 	return err
 }
-
-func (svc *Service) StartBot() error {
-
-	// quote, err := svc.repository.RetrieveKLines()
-	// if err != nil {
-	// 	// TODO: handle error
-	// 	panic(err)
-	// }
-
-	// quo
-	return nil
-
-}
-
-func (svc *Service) StopBot() error { return nil }
-
-func (svc *Service) UpdateBot() error { return nil }
 
 // func emaStratagy(){
 // 	func EMASignal(isBuyAction bool, configs ...emaConfig) bool {

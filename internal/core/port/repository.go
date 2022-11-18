@@ -16,10 +16,11 @@ type Exchange interface {
 	PlaceBid() error
 	PlaceAsk() error
 	Cancel() error
-	RetrieveKLines() (domain.Quote, error)
+	RetrieveKLines(symbol, startDate, endDate string, period domain.Period) (domain.Quote, error)
 }
 
 type BotConfig interface {
 	UpdateBotConfig(domain.BotConfig) error
+	RetrieveBotConfig() (domain.BotConfig, error)
 	UpdateBotExchange(in domain.BotExchange) error
 }

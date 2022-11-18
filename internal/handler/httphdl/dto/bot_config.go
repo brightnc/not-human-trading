@@ -1,6 +1,10 @@
 package dto
 
-import "github.com/brightnc/not-human-trading/internal/core/domain"
+import (
+	"log"
+
+	"github.com/brightnc/not-human-trading/internal/core/domain"
+)
 
 type BotConfigRequest struct {
 	RSIConfig        RSIConfig        `json:"rsi_config"`
@@ -9,7 +13,7 @@ type BotConfigRequest struct {
 	EMAConfig        EMAConfig        `json:"ema_config"`
 	SupertrendConfig SupertrendConfig `json:"supertrend_config"`
 	OrderConfig      OrderConfig      `json:"order_config"`
-	Timeframe        string           `json:"timeframe"`
+	Timeframe        string           `json:"timeframe" validate:"oneof= 1m 3m 5m 15m 30m 1h 2h 4h 6h 8h 12h 1d 3d 1w 1mth"`
 }
 
 type RSIConfig struct {
@@ -53,6 +57,43 @@ type OrderConfig struct {
 // ToBotConfigDomain ...
 // convert protocol payload to be domain object
 func (d BotConfigRequest) ToBotConfigDomain() domain.BotConfig {
+	var timeframe domain.Period
+	switch d.Timeframe {
+	case "1m":
+		timeframe = domain.Min1
+	case "3m":
+		timeframe = domain.Min3
+	case "5m":
+		timeframe = domain.Min5
+	case "15m":
+		timeframe = domain.Min15
+	case "30m":
+		timeframe = domain.Min30
+	case "1h":
+		timeframe = domain.Min60
+	case "2h":
+		timeframe = domain.Hour2
+	case "4h":
+		timeframe = domain.Hour4
+	case "6h":
+		timeframe = domain.Hour6
+	case "8h":
+		timeframe = domain.Hour8
+	case "12h":
+		timeframe = domain.Hour12
+	case "1d":
+		timeframe = domain.Daily
+	case "3d":
+		timeframe = domain.Day3
+	case "1w":
+		timeframe = domain.Weekly
+	case "1mth":
+		timeframe = domain.Monthly
+	default:
+		//! should not be reached
+		log.Println("unexpected timeframe ", d.Timeframe)
+		timeframe = domain.Min5
+	}
 	return domain.BotConfig{
 		RSIConfig:        (domain.RSIConfig)(d.RSIConfig),
 		STOConfig:        (domain.STOConfig)(d.STOConfig),
@@ -60,7 +101,7 @@ func (d BotConfigRequest) ToBotConfigDomain() domain.BotConfig {
 		EMAConfig:        (domain.EMAConfig)(d.EMAConfig),
 		SupertrendConfig: (domain.SupertrendConfig)(d.SupertrendConfig),
 		OrderConfig:      (domain.OrderConfig)(d.OrderConfig),
-		Timeframe:        d.Timeframe,
+		Timeframe:        timeframe,
 	}
 }
 

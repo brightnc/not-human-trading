@@ -7,8 +7,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func (hdl *HTTPHandler) UpdateBotExchangeConfig(c *fiber.Ctx) error {
-	var request dto.UpdateBotExchangeRequest
+func (hdl *HTTPHandler) StartBot(c *fiber.Ctx) error {
+	var request dto.BotConfigRequest
 
 	err := c.BodyParser(&request)
 	if err != nil {
@@ -22,9 +22,14 @@ func (hdl *HTTPHandler) UpdateBotExchangeConfig(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(apperror.NewInvalidaParameterError())
 	}
 
-	err = hdl.svc.UpdateBotExchange(request.ToBotExchangeDomain())
+	err = hdl.svc.StartBot(request.ToBotConfigDomain())
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
+	return c.SendStatus(fiber.StatusOK)
+}
+
+func (hdl *HTTPHandler) StopBot(c *fiber.Ctx) error {
+	hdl.svc.StopBot()
 	return c.SendStatus(fiber.StatusOK)
 }

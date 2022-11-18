@@ -3,6 +3,7 @@ package repository
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 
 	"github.com/brightnc/not-human-trading/internal/core/domain"
@@ -16,6 +17,18 @@ type botConfig struct {
 	Supertrend supertrendConfig `json:"supertrend"`
 	Order      botOrder         `json:"botOrder"`
 	Timeframe  string           `json:"timeframe"`
+}
+
+func (cfg botConfig) ToBotConfigDomain() domain.BotConfig {
+	return domain.BotConfig{
+		RSIConfig:        (domain.RSIConfig)(cfg.RSI),
+		STOConfig:        (domain.STOConfig)(cfg.STO),
+		MACDConfig:       (domain.MACDConfig)(cfg.MACD),
+		EMAConfig:        (domain.EMAConfig)(cfg.EMA),
+		SupertrendConfig: (domain.SupertrendConfig)(cfg.Supertrend),
+		OrderConfig:      (domain.OrderConfig)(cfg.Order),
+		Timeframe:        domain.Period(cfg.Timeframe),
+	}
 }
 
 type emaConfig struct {
@@ -92,7 +105,7 @@ func (ind *BotConfig) UpdateBotConfig(in domain.BotConfig) error {
 		STO:        (stoConfig)(in.STOConfig),
 		Supertrend: (supertrendConfig)(in.SupertrendConfig),
 		Order:      (botOrder)(in.OrderConfig),
-		Timeframe:  in.Timeframe,
+		Timeframe:  string(in.Timeframe),
 	}
 	configJSON, err := json.Marshal(&config)
 	if err != nil {
@@ -106,6 +119,25 @@ func (ind *BotConfig) UpdateBotConfig(in domain.BotConfig) error {
 	}
 	defer f.Close()
 	return nil
+}
+
+func (ind *BotConfig) RetrieveBotConfig() (domain.BotConfig, error) {
+	rootDir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	configFile := fmt.Sprintf("%s/%s", rootDir, botConfigFileName)
+	f, err := ioutil.ReadFile(configFile)
+	if err != nil {
+		fmt.Println("cannot read file from ", configFile)
+		return domain.BotConfig{}, err
+	}
+	var cfg botConfig
+	err = json.Unmarshal(f, &cfg)
+	if err != nil {
+		panic(err)
+	}
+	return cfg.ToBotConfigDomain(), err
 }
 
 func (ind *BotConfig) UpdateBotExchange(in domain.BotExchange) error {

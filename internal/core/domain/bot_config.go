@@ -7,7 +7,7 @@ type BotConfig struct {
 	EMAConfig        EMAConfig
 	SupertrendConfig SupertrendConfig
 	OrderConfig      OrderConfig
-	Timeframe        string
+	Timeframe        Period
 }
 
 type RSIConfig struct {
