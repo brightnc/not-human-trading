@@ -63,7 +63,7 @@ func (svc *Service) startBot(botConfig domain.BotConfig) {
 		)
 		if err != nil {
 			fmt.Println("error while retrieving klines...")
-			svc.stopSignal <- true
+			svc.hasStopSignal = true
 		}
 		// take an action buy/sell depend on svc.hasCreatedOrder
 		hasSignal := false
