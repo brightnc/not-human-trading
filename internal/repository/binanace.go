@@ -100,11 +100,12 @@ func (r *Binance) RetrieveKLines(symbol, startDate, endDate string, period domai
 		endBar = end
 	}
 	quoteMapper := make(map[int]quote.Quote)
-	fetchingRound := 0
+	fetchingRound := -1
 	var errs error
 	var wg sync.WaitGroup
 	for startBar.Before(end) && (errs == nil) {
 		wg.Add(1)
+		fetchingRound++
 		go func(sequenceNumber int, wg *sync.WaitGroup) {
 			q, err := r.retrieveKlines(symbol, interval, startBar, endBar)
 			if err != nil {
@@ -112,6 +113,7 @@ func (r *Binance) RetrieveKLines(symbol, startDate, endDate string, period domai
 				errs = err
 				return
 			}
+			fmt.Println("q from binanace ->>> ", q)
 			r.mutext.Lock()
 			quoteMapper[sequenceNumber] = quote.Quote{
 				Date:   q.Date,
@@ -124,7 +126,7 @@ func (r *Binance) RetrieveKLines(symbol, startDate, endDate string, period domai
 			r.mutext.Unlock()
 			defer wg.Done()
 		}(fetchingRound, &wg)
-		fetchingRound++
+
 		startBar = endBar.Add(step)
 		endBar = startBar.Add(time.Duration(maxBars) * step)
 	}
@@ -138,6 +140,7 @@ func (r *Binance) RetrieveKLines(symbol, startDate, endDate string, period domai
 		appQuote.Close = append(appQuote.Close, quoteMapper[i].Close...)
 		appQuote.Volume = append(appQuote.Volume, quoteMapper[i].Volume...)
 	}
+	fmt.Println("appQuotes ->>> ", appQuote)
 	return appQuote, errs
 }
 
