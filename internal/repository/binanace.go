@@ -129,9 +129,10 @@ func (r *Binance) RetrieveKLines(symbol, startDate, endDate string, period domai
 		startBar = endBar.Add(step)
 		endBar = startBar.Add(time.Duration(maxBars) * step)
 	}
+	roundRange := make([]bool, fetchingRound)
 	// block until done
 	wg.Wait()
-	for i := 0; i < fetchingRound; i++ {
+	for i := range roundRange {
 		fmt.Println("fetching round =  , i = ", fetchingRound, i)
 		appQuote.Date = append(appQuote.Date, quoteMapper[i].Date...)
 		appQuote.Open = append(appQuote.Open, quoteMapper[i].Open...)
