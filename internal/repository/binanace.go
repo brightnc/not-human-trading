@@ -148,7 +148,6 @@ func (r *Binance) retrieveKlines(symbol, interval string, startBar, endBar time.
 		interval,
 		startBar.UnixNano()/1000000,
 		endBar.UnixNano()/1000000)
-	fmt.Println("featching URL ->>> ", url)
 	client := &http.Client{Timeout: quote.ClientTimeout}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
