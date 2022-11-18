@@ -19,34 +19,32 @@ func (svc *Service) StartBot(in domain.BotConfig) error {
 		fmt.Println("error while retrieving bot config...")
 		return err
 	}
-	startSignal := make(chan bool)
-	go svc.botHandler(startSignal, botConfig)
-	startSignal <- true
+	svc.hasStopSignal = false
+	go svc.startBot(botConfig)
 	return err
 }
 
 func (svc *Service) StopBot() {
-	svc.stopSignal <- true
-	svc.isBotRunning = false
+	fmt.Println("got stop bot signal")
+	svc.hasStopSignal = true
 	return
 }
 
-func (svc *Service) botHandler(startSignal chan bool, botConfig domain.BotConfig) {
-	for {
-		select {
-		case <-startSignal:
-			go svc.startBot(botConfig)
-		case <-svc.stopSignal:
-			fmt.Println("bot stopping")
-			return
-		}
-	}
-}
+// func (svc *Service) botHandler(startSignal chan bool, botConfig domain.BotConfig) {
+// 	for {
+// 		select {
+// 		case <-startSignal:
+// 			go svc.startBot(botConfig)
+// 		case <-svc.stopSignal:
+// 			fmt.Println("bot stopping")
+// 			return
+// 		}
+// 	}
+// }
 
 func (svc *Service) startBot(botConfig domain.BotConfig) {
 	lastExecutionTime := time.Now()
-	svc.isBotRunning = true
-	for {
+	for svc.hasStopSignal {
 		// Cooldown excution process...
 		if time.Now().Sub(lastExecutionTime) < time.Duration(time.Second) {
 			time.Sleep(time.Millisecond * 500)
@@ -108,6 +106,7 @@ func (svc *Service) startBot(botConfig domain.BotConfig) {
 		}
 		lastExecutionTime = time.Now()
 	}
+	fmt.Println("bot has been stopped")
 
 }
 

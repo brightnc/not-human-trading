@@ -8,8 +8,7 @@ type Service struct {
 	exchange        port.Exchange
 	botRepo         port.BotConfig
 	hasCreatedOrder bool
-	isBotRunning    bool
-	stopSignal      chan bool
+	hasStopSignal   bool
 }
 
 func NewService(
@@ -20,7 +19,6 @@ func NewService(
 		exchange:        exchangeRepo,
 		botRepo:         botRepo,
 		hasCreatedOrder: false,
-		isBotRunning:    false,
-		stopSignal:      make(chan bool),
+		hasStopSignal:   false,
 	}
 }
