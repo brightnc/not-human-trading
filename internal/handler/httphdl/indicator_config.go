@@ -95,6 +95,10 @@ func (hdl *HTTPHandler) responseError(err error, c *fiber.Ctx) error {
 	return c.Status(http.StatusInternalServerError).JSON(appresponse.Error(err.Error()))
 }
 
+func (hdl *HTTPHandler) UpdateOrder(c *fiber.Ctx) error {
+	return c.SendStatus(fiber.StatusOK)
+}
+
 func (hdl *HTTPHandler) UpdateBotConfig(c *fiber.Ctx) error {
 	var request dto.BotConfigRequest
 

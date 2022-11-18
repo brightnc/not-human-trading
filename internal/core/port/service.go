@@ -17,6 +17,7 @@ import (
 type Service interface {
 	UpdateIndicator(in domain.IndicatorConfig) error
 	UpdateBotConfig(domain.BotConfig) error
+	UpdateBotOrder(in domain.BotOrder) error
 	StartBot() error
 	StopBot() error
 }
