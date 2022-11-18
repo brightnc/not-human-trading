@@ -15,5 +15,5 @@
 # vendor/
 .env
 *.vscode
-
+**config.json
 **botKeys.json
