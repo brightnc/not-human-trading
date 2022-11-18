@@ -122,7 +122,6 @@ func (svc *Service) emaSignal(configs ...emaConfig) bool {
 		indicatorValue float64
 	}
 	mapper := make(map[int]indicator, len(configs))
-	fmt.Println("configs len  and values ", len(configs), configs)
 	isOK := false
 	for i := range configs {
 		ema := talib.Ema(configs[i].values, configs[i].period)
