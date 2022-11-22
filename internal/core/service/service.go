@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/brightnc/not-human-trading/internal/core/domain"
 	"github.com/brightnc/not-human-trading/internal/core/port"
 )
 
@@ -9,6 +10,7 @@ type Service struct {
 	botRepo         port.BotConfig
 	hasCreatedOrder bool
 	hasStopSignal   bool
+	subscribers     []*domain.Connection
 }
 
 func NewService(

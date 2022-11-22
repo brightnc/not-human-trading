@@ -7,8 +7,10 @@ import (
 
 	"github.com/brightnc/not-human-trading/config"
 	"github.com/brightnc/not-human-trading/internal/handler/httphdl"
+	"github.com/brightnc/not-human-trading/internal/handler/ws"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/websocket/v2"
 )
 
 /*
@@ -29,9 +31,24 @@ func ServeREST() error {
 
 	srv.Use(cors.New(cors.ConfigDefault))
 	hdl := httphdl.NewHTTPHandler(app.svc, app.pkg.vld)
+	wshdl := ws.NewWebSocketHandler(app.svc, app.pkg.vld)
 	v1Group := srv.Group("/v1")
+	wsGroup := srv.Group("/ws")
+	wsV1Group := wsGroup.Group("/v1")
+	wsV1Group.Use("", func(c *fiber.Ctx) error {
+		// IsWebSocketUpgrade returns true if the client
+		// requested upgrade to the WebSocket protocol.
+		if websocket.IsWebSocketUpgrade(c) {
+			c.Locals("allowed", true)
+			return c.Next()
+		}
+		return fiber.ErrUpgradeRequired
+	})
 	exchangesV1Group := v1Group.Group("/exchanges")
 	exchangesV1Group.Put("", hdl.UpdateBotExchangeConfig)
+	wsV1Group.Get("", websocket.New(func(c *websocket.Conn) {
+		wshdl.SubscribeMessage(c)
+	}))
 	botsV1Group := v1Group.Group("/bots")
 	// example
 	botsV1Group.Post("/start", hdl.StartBot)

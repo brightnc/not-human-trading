@@ -50,8 +50,8 @@ type SupertrendConfig struct {
 }
 
 type OrderConfig struct {
-	Symbol   string  `json:"sym"`
-	Quantity float64 `json:"qty"`
+	Symbol   string `json:"sym"`
+	Quantity string `json:"qty"`
 }
 
 // ToBotConfigDomain ...

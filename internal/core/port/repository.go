@@ -22,5 +22,6 @@ type Exchange interface {
 type BotConfig interface {
 	UpdateBotConfig(domain.BotConfig) error
 	RetrieveBotConfig() (domain.BotConfig, error)
+	RetrieveBotExchange() (domain.BotExchange, error)
 	UpdateBotExchange(in domain.BotExchange) error
 }

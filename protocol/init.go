@@ -2,6 +2,7 @@ package protocol
 
 import (
 	"github.com/brightnc/not-human-trading/config"
+	"github.com/brightnc/not-human-trading/internal/core/domain"
 	"github.com/brightnc/not-human-trading/internal/core/service"
 	"github.com/brightnc/not-human-trading/internal/repository"
 	"github.com/brightnc/not-human-trading/pkg/logger"
@@ -14,7 +15,8 @@ type application struct {
 	// svc stand for service
 	svc *service.Service
 	// pkg stand for package
-	pkg packages
+	pkg              packages
+	broadcastChannel chan domain.WsMessage
 }
 
 type packages struct {

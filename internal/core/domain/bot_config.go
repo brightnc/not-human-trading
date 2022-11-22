@@ -45,7 +45,7 @@ type SupertrendConfig struct {
 
 type OrderConfig struct {
 	Symbol   string
-	Quantity float64
+	Quantity string
 }
 
 type BotExchange struct {

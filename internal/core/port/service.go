@@ -16,6 +16,7 @@ import (
 
 type Service interface {
 	// UpdateBotConfig(in domain.BotConfig) error
+	RegisterWebsocketClient(*domain.Connection) error
 	UpdateBotExchange(in domain.BotExchange) error
 	StartBot(in domain.BotConfig) error
 	StopBot()

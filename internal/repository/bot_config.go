@@ -65,8 +65,8 @@ type supertrendConfig struct {
 }
 
 type botOrder struct {
-	Symbol   string  `json:"sym"`
-	Quantity float64 `json:"qty"`
+	Symbol   string `json:"sym"`
+	Quantity string `json:"qty"`
 }
 
 // -----
@@ -74,6 +74,13 @@ type botOrder struct {
 type botExchangeConfig struct {
 	APIKey    string `json:"apiKey"`
 	SecretKey string `json:"secretKey"`
+}
+
+func (r botExchangeConfig) ToBotConfigExchangeDomain() domain.BotExchange {
+	return domain.BotExchange{
+		APIKey:    r.APIKey,
+		SecretKey: r.SecretKey,
+	}
 }
 
 const (
@@ -138,6 +145,25 @@ func (ind *BotConfig) RetrieveBotConfig() (domain.BotConfig, error) {
 		panic(err)
 	}
 	return cfg.ToBotConfigDomain(), err
+}
+
+func (ind *BotConfig) RetrieveBotExchange() (domain.BotExchange, error) {
+	rootDir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	configFile := fmt.Sprintf("%s/%s", rootDir, botExchangeCofigFileName)
+	f, err := ioutil.ReadFile(configFile)
+	if err != nil {
+		fmt.Println("cannot read file from ", configFile)
+		return domain.BotExchange{}, err
+	}
+	var cfg botExchangeConfig
+	err = json.Unmarshal(f, &cfg)
+	if err != nil {
+		panic(err)
+	}
+	return cfg.ToBotConfigExchangeDomain(), err
 }
 
 func (ind *BotConfig) UpdateBotExchange(in domain.BotExchange) error {
