@@ -49,16 +49,15 @@ func (r *subscription) writeMessage() {
 			_, err := json.Marshal(message)
 			if err != nil {
 				fmt.Println("CANNOT MARSHAL JSON ", err)
-				panic(err)
 			}
 			if c.Ws == nil {
 				fmt.Println("Nil Connection")
+				return
 			}
 			c.Ws.SetWriteDeadline(time.Now().Add(time.Second * 4))
 			err = c.Ws.WriteJSON(message)
 			if err != nil {
 				fmt.Println("CANNOT WRITE JSON ", err)
-				panic(err)
 			}
 		}
 	}
