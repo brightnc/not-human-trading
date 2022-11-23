@@ -1,13 +1,10 @@
 package service
 
 import (
-	"context"
 	"fmt"
 	"math"
 	"time"
 
-	"github.com/adshao/go-binance/v2"
-	"github.com/adshao/go-binance/v2/futures"
 	"github.com/brightnc/not-human-trading/internal/core/domain"
 	"github.com/cinar/indicator"
 	"github.com/markcheno/go-talib"
@@ -16,23 +13,27 @@ import (
 func (svc *Service) StartBot(in domain.BotConfig) error {
 	err := svc.botRepo.UpdateBotConfig(in)
 	if err != nil {
-		fmt.Println("error while update bot config...")
+		fmt.Println("error while update UpdateBotConfig...")
 		return err
 	}
 	botConfig, err := svc.botRepo.RetrieveBotConfig()
 	if err != nil {
-		fmt.Println("error while retrieving bot config...")
+		fmt.Println("error while retrieving bot Config...")
+		return err
+	}
+	botExchange, err := svc.botRepo.RetrieveBotExchange()
+	if err != nil {
+		fmt.Println("error while retrieving bot Exchange...")
 		return err
 	}
 	svc.hasStopSignal = false
-	go svc.startBot(botConfig)
+	go svc.startBot(botConfig, botExchange)
 	return err
 }
 
 func (svc *Service) StopBot() {
 	fmt.Println("got stop bot signal")
 	svc.hasStopSignal = true
-	return
 }
 
 // func (svc *Service) botHandler(startSignal chan bool, botConfig domain.BotConfig) {
@@ -47,10 +48,11 @@ func (svc *Service) StopBot() {
 // 	}
 // }
 
-func (svc *Service) startBot(botConfig domain.BotConfig) {
+func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotExchange) {
 	lastExecutionTime := time.Now()
 	turnTimer := time.Now().Add(time.Second * 60)
 	turnCounter := 0
+	var placedQuantity string
 	for !svc.hasStopSignal {
 
 		if time.Now().After(turnTimer) {
@@ -174,6 +176,15 @@ func (svc *Service) startBot(botConfig domain.BotConfig) {
 			hasSignal = svc.superTrendSignal(trend)
 		}
 		if hasSignal {
+			order := domain.PlaceOrder{
+				Symbol:    botConfig.OrderConfig.Symbol,
+				Quantity:  botConfig.OrderConfig.Quantity,
+				OrderType: domain.OrderTypeMarket,
+			}
+			exchangeKey := domain.BotExchange{
+				APIKey:    botExchange.APIKey,
+				SecretKey: botExchange.SecretKey,
+			}
 			if svc.hasCreatedOrder {
 				//TODO: selling
 				fmt.Printf("Selling symbol: %s quantity:  %v @%v\n", botConfig.OrderConfig.Symbol, botConfig.OrderConfig.Quantity, time.Now().Format(time.RFC3339Nano))
@@ -183,7 +194,12 @@ func (svc *Service) startBot(botConfig domain.BotConfig) {
 					Message: logClient,
 					Type:    domain.MessageTypeTradingReport,
 				})
-				svc.createOrder(botConfig.OrderConfig.Symbol, futures.OrderTypeMarket, binance.SideTypeSell, botConfig.OrderConfig.Quantity)
+				order.Quantity = placedQuantity
+				result, err := svc.exchange.PlaceAsk(order, exchangeKey)
+				if err != nil {
+					panic(err)
+				}
+				fmt.Println("created sell order : ", result)
 				svc.hasCreatedOrder = false
 			} else {
 				// TODO:: buying
@@ -194,7 +210,12 @@ func (svc *Service) startBot(botConfig domain.BotConfig) {
 					Message: logClient,
 					Type:    domain.MessageTypeTradingReport,
 				})
-				svc.createOrder(botConfig.OrderConfig.Symbol, futures.OrderTypeMarket, binance.SideTypeBuy, botConfig.OrderConfig.Quantity)
+				result, err := svc.exchange.PlaceBid(order, exchangeKey)
+				if err != nil {
+					panic(err)
+				}
+				fmt.Println("created buy order : ", result)
+				placedQuantity = result.ActualQuantity
 				svc.hasCreatedOrder = true
 			}
 
@@ -419,23 +440,4 @@ func superTrendDetail(configs SPTConfig) ([]float64, []float64, []float64, []boo
 	}
 
 	return trendUp, trendDown, tsl, trend, times
-}
-
-func (svc *Service) createOrder(symbol string, orderType futures.OrderType, side binance.SideType, qty string) {
-	var err error
-	// futures.UseTestnet = true
-	exchangeConfig, err := svc.botRepo.RetrieveBotExchange()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	client := binance.NewClient(exchangeConfig.APIKey, exchangeConfig.SecretKey)
-	createdOrder, err := client.NewCreateOrderService().Symbol(symbol).Side(side).Type(binance.OrderTypeMarket).QuoteOrderQty(qty).Do(context.Background())
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	fmt.Println("created order : ", createdOrder)
-
 }

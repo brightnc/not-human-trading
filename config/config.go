@@ -16,8 +16,9 @@ type Config struct {
 }
 
 type appConfig struct {
-	HTTPPort string `envconfig:"APP_HTTP_PORT" default: 8443`
-	Env      string `envconfig:"APP_ENV" default: staging`
+	HTTPPort   string `envconfig:"APP_HTTP_PORT" default: 8443`
+	Env        string `envconfig:"APP_ENV" default: staging`
+	IsTestMode bool   `envconfig:"APP_IS_TEST_MODE"`
 }
 
 var config Config

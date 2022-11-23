@@ -13,8 +13,8 @@ import "github.com/brightnc/not-human-trading/internal/core/domain"
 */
 
 type Exchange interface {
-	PlaceBid() error
-	PlaceAsk() error
+	PlaceBid(domain.PlaceOrder, domain.BotExchange) (domain.PlaceOrderResult, error)
+	PlaceAsk(domain.PlaceOrder, domain.BotExchange) (domain.PlaceOrderResult, error)
 	Cancel() error
 	RetrieveKLines(symbol, startDate, endDate string, period domain.Period) (domain.Quote, error)
 }

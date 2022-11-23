@@ -26,7 +26,7 @@ type packages struct {
 func init() {
 	logger.Init("BOT-XXX")
 	config.Init()
-	biananceRepo := repository.NewBinanceExchange()
+	biananceRepo := repository.NewBinanceExchange(config.GetConfig().App.IsTestMode)
 	botConfigRepo := repository.NewBotConfig()
 	packages := packages{
 		vld: validators.New(),

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -10,23 +11,121 @@ import (
 	"sync"
 	"time"
 
+	"github.com/adshao/go-binance/v2"
+	"github.com/adshao/go-binance/v2/futures"
 	"github.com/brightnc/not-human-trading/internal/core/domain"
 	"github.com/markcheno/go-quote"
 )
 
 type Binance struct {
-	mutext *sync.Mutex
+	isTestNet bool
+	mutext    *sync.Mutex
 }
 
-func NewBinanceExchange() *Binance {
+func NewBinanceExchange(isTestNet bool) *Binance {
 	return &Binance{
-		mutext: &sync.Mutex{},
+		isTestNet: isTestNet,
+		mutext:    &sync.Mutex{},
 	}
 }
 
-func (r *Binance) PlaceBid() error { return nil }
-func (r *Binance) PlaceAsk() error { return nil }
-func (r *Binance) Cancel() error   { return nil }
+func convertSideToDomain(n string) domain.OrderSide {
+	switch n {
+	case "BUY":
+		return domain.OrderSideBuy
+	case "SELL":
+		return domain.OrderSideSell
+	default:
+		return domain.OrderSideUnknow
+	}
+}
+
+func convertOrderTypeToDomain(n string) domain.OrderType {
+	switch n {
+	case "MARKET":
+		return domain.OrderTypeMarket
+	default:
+		return domain.OrderTypeUnknow
+	}
+}
+
+func (r *Binance) placeBidFutures(req domain.PlaceOrder, k domain.BotExchange) (domain.PlaceOrderResult, error) {
+	futures.UseTestnet = true
+	client := futures.NewClient(k.APIKey, k.SecretKey)
+	createdOrder, err := client.NewCreateOrderService().Symbol(req.Symbol).Side(futures.SideTypeBuy).Type(futures.OrderType(req.OrderType)).Quantity(req.Quantity).Do(context.Background())
+	if err != nil {
+		fmt.Println(err)
+		return domain.PlaceOrderResult{}, err
+	}
+	return domain.PlaceOrderResult{
+		Symbol:         createdOrder.Symbol,
+		Side:           convertSideToDomain(string(createdOrder.Side)),
+		OrderType:      convertOrderTypeToDomain(string(createdOrder.Type)),
+		OriginQuantity: createdOrder.OrigQuantity,
+		ActualQuantity: createdOrder.ExecutedQuantity,
+		Price:          createdOrder.Price,
+	}, nil
+}
+
+func (r *Binance) placeAskFutures(req domain.PlaceOrder, k domain.BotExchange) (domain.PlaceOrderResult, error) {
+	futures.UseTestnet = true
+	client := futures.NewClient(k.APIKey, k.SecretKey)
+	createdOrder, err := client.NewCreateOrderService().Symbol(req.Symbol).Side(futures.SideTypeSell).Type(futures.OrderType(req.OrderType)).Quantity(req.Quantity).Do(context.Background())
+	if err != nil {
+		fmt.Println(err)
+		return domain.PlaceOrderResult{}, err
+	}
+	return domain.PlaceOrderResult{
+		Symbol:         createdOrder.Symbol,
+		Side:           convertSideToDomain(string(createdOrder.Side)),
+		OrderType:      convertOrderTypeToDomain(string(createdOrder.Type)),
+		OriginQuantity: createdOrder.OrigQuantity,
+		ActualQuantity: createdOrder.ExecutedQuantity,
+		Price:          createdOrder.Price,
+	}, nil
+}
+
+func (r *Binance) PlaceBid(req domain.PlaceOrder, k domain.BotExchange) (domain.PlaceOrderResult, error) {
+	if r.isTestNet {
+		return r.placeBidFutures(req, k)
+	}
+	client := binance.NewClient(k.APIKey, k.SecretKey)
+	createdOrder, err := client.NewCreateOrderService().Symbol(req.Symbol).Side(binance.SideTypeBuy).Type(binance.OrderType(req.OrderType)).QuoteOrderQty(req.Quantity).Do(context.Background())
+	if err != nil {
+		fmt.Println(err)
+		return domain.PlaceOrderResult{}, err
+	}
+	return domain.PlaceOrderResult{
+		Symbol:         createdOrder.Symbol,
+		Side:           convertSideToDomain(string(createdOrder.Side)),
+		OrderType:      convertOrderTypeToDomain(string(createdOrder.Type)),
+		OriginQuantity: createdOrder.OrigQuantity,
+		ActualQuantity: createdOrder.ExecutedQuantity,
+		Price:          createdOrder.Price,
+	}, nil
+}
+
+func (r *Binance) PlaceAsk(req domain.PlaceOrder, k domain.BotExchange) (domain.PlaceOrderResult, error) {
+	if r.isTestNet {
+		return r.placeAskFutures(req, k)
+	}
+	client := binance.NewClient(k.APIKey, k.SecretKey)
+	createdOrder, err := client.NewCreateOrderService().Symbol(req.Symbol).Side(binance.SideTypeSell).Type(binance.OrderType(req.OrderType)).QuoteOrderQty(req.Quantity).Do(context.Background())
+	if err != nil {
+		fmt.Println(err)
+		return domain.PlaceOrderResult{}, err
+	}
+	return domain.PlaceOrderResult{
+		Symbol:         createdOrder.Symbol,
+		Side:           convertSideToDomain(string(createdOrder.Side)),
+		OrderType:      convertOrderTypeToDomain(string(createdOrder.Type)),
+		OriginQuantity: createdOrder.OrigQuantity,
+		ActualQuantity: createdOrder.ExecutedQuantity,
+		Price:          createdOrder.Price,
+	}, nil
+}
+
+func (r *Binance) Cancel() error { return nil }
 
 // RetrieveKLines...
 // Binance historical prices for a symbol
