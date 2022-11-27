@@ -22,6 +22,7 @@ func Init(component string) {
 	loggerConfig.InitialFields = map[string]interface{}{
 		"component": component,
 	}
+	loggerConfig.OutputPaths = []string{"bot.log"}
 	defaultLog, err := loggerConfig.Build(zap.AddCallerSkip(1))
 
 	if err != nil {

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/brightnc/not-human-trading/internal/core/domain"
+	"github.com/brightnc/not-human-trading/pkg/logger"
 	"github.com/cinar/indicator"
 	"github.com/markcheno/go-talib"
 )
@@ -13,17 +14,17 @@ import (
 func (svc *Service) StartBot(in domain.BotConfig) error {
 	err := svc.botRepo.UpdateBotConfig(in)
 	if err != nil {
-		fmt.Println("error while update UpdateBotConfig...")
+		logger.Error("error while update UpdateBotConfig... ", err)
 		return err
 	}
 	botConfig, err := svc.botRepo.RetrieveBotConfig()
 	if err != nil {
-		fmt.Println("error while retrieving bot Config...")
+		logger.Error("error while retrieving bot Config... ", err)
 		return err
 	}
 	botExchange, err := svc.botRepo.RetrieveBotExchange()
 	if err != nil {
-		fmt.Println("error while retrieving bot Exchange...")
+		logger.Error("error while retrieving bot Exchange... ", err)
 		return err
 	}
 	svc.hasStopSignal = false
@@ -32,38 +33,32 @@ func (svc *Service) StartBot(in domain.BotConfig) error {
 }
 
 func (svc *Service) StopBot() {
-	fmt.Println("got stop bot signal")
+	logger.Info("got stoping signal")
 	svc.hasStopSignal = true
 }
-
-// func (svc *Service) botHandler(startSignal chan bool, botConfig domain.BotConfig) {
-// 	for {
-// 		select {
-// 		case <-startSignal:
-// 			go svc.startBot(botConfig)
-// 		case <-svc.stopSignal:
-// 			fmt.Println("bot stopping")
-// 			return
-// 		}
-// 	}
-// }
 
 func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotExchange) {
 	lastExecutionTime := time.Now()
 	turnTimer := time.Now().Add(time.Second * 60)
 	turnCounter := 0
 	var placedQuantity string
+	defer func() {
+		svc.broacast(domain.WsMessage{
+			Time:    time.Now(),
+			Message: "bot has been stopped",
+			Type:    domain.MessageTypeFeed,
+		})
+	}()
 	for !svc.hasStopSignal {
 
 		if time.Now().After(turnTimer) {
 			turnCounter = 0
-			fmt.Println("Clear turn counter : ", turnCounter)
+			logger.Info("Clear turn counter : ", turnCounter)
 			turnTimer = time.Now().Add(time.Second * 60)
 		}
 		if turnCounter == 12 {
-			fmt.Println("maximun turn reached ")
+			logger.Info("maximun turn reached ")
 			time.Sleep(time.Second)
-
 			continue
 		}
 		// Cooldown excution process...
@@ -83,13 +78,13 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 			domain.Min5,
 		)
 		if err != nil {
-			fmt.Println("error while retrieving klines...")
+			logger.Info("error while retrieving klines...")
 			svc.hasStopSignal = true
 		}
 		// take an action buy/sell depend on svc.hasCreatedOrder
 		hasSignal := false
 		if botConfig.EMAConfig.IsActive {
-			fmt.Println("Checking for EMA Signal")
+			logger.Info("Checking for EMA Signal")
 			svc.broacast(domain.WsMessage{
 				Time:    time.Now(),
 				Message: "Checking for EMA Signal...",
@@ -109,7 +104,7 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 		}
 
 		if botConfig.MACDConfig.IsActive {
-			fmt.Println("Checking for MACD Signal")
+			logger.Info("Checking for MACD Signal")
 			svc.broacast(domain.WsMessage{
 				Time:    time.Now(),
 				Message: "Checking for MACD Signal...",
@@ -124,7 +119,7 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 			hasSignal = svc.macdSignal(macdConfig)
 		}
 		if botConfig.RSIConfig.IsActive {
-			fmt.Println("Checking for RSI Signal")
+			logger.Info("Checking for RSI Signal")
 
 			svc.broacast(domain.WsMessage{
 				Time:    time.Now(),
@@ -139,7 +134,7 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 			hasSignal = svc.rsiSignal(rsiConfig)
 		}
 		if botConfig.STOConfig.IsActive {
-			fmt.Println("Checking for STO Signal")
+			logger.Info("Checking for STO Signal")
 
 			svc.broacast(domain.WsMessage{
 				Time:    time.Now(),
@@ -155,7 +150,7 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 			hasSignal = svc.stoSignal(stoConfig)
 		}
 		if botConfig.SupertrendConfig.IsActive {
-			fmt.Println("Checking Supertrend Signal")
+			logger.Info("Checking Supertrend Signal")
 
 			svc.broacast(domain.WsMessage{
 				Time:    time.Now(),
@@ -172,7 +167,7 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 			}
 
 			_, _, _, trend, _ := superTrendDetail(sptConfig)
-			fmt.Println("TREND >> ", trend[len(trend)-10:])
+			logger.Info("TREND >> ", trend[len(trend)-10:])
 			hasSignal = svc.superTrendSignal(trend)
 		}
 		if hasSignal {
@@ -187,34 +182,28 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 			}
 			if svc.hasCreatedOrder {
 				//TODO: selling
-				fmt.Printf("Selling symbol: %s quantity:  %v @%v\n", botConfig.OrderConfig.Symbol, botConfig.OrderConfig.Quantity, time.Now().Format(time.RFC3339Nano))
-				logClient := fmt.Sprintf("Selling symbol: %s quantity: %v", botConfig.OrderConfig.Symbol, botConfig.OrderConfig.Quantity)
-				svc.broacast(domain.WsMessage{
-					Time:    time.Now(),
-					Message: logClient,
-					Type:    domain.MessageTypeTradingReport,
-				})
+				logger.Info("Selling... symbol: %s quantity:  %v @%v\n", botConfig.OrderConfig.Symbol, botConfig.OrderConfig.Quantity, time.Now().Format(time.RFC3339Nano))
 				order.Quantity = placedQuantity
 				result, err := svc.exchange.PlaceAsk(order, exchangeKey)
 				if err != nil {
-					panic(err)
+					logger.Error("cannot PlaceAsk order ", err)
+					return
 				}
-				fmt.Println("created sell order : ", result)
+				svc.broacast(placedOrderMessage(result))
+				logger.Info("created sell order : ", result)
 				svc.hasCreatedOrder = false
 			} else {
 				// TODO:: buying
-				fmt.Printf("Buying symbol: %s quantity:  %v @%s", botConfig.OrderConfig.Symbol, botConfig.OrderConfig.Quantity, time.Now().Format(time.RFC3339Nano))
-				logClient := fmt.Sprintf("Buying symbol: %s quantity: %v", botConfig.OrderConfig.Symbol, botConfig.OrderConfig.Quantity)
-				svc.broacast(domain.WsMessage{
-					Time:    time.Now(),
-					Message: logClient,
-					Type:    domain.MessageTypeTradingReport,
-				})
+				fmt.Printf("Buying... symbol: %s quantity:  %v @%s", botConfig.OrderConfig.Symbol, botConfig.OrderConfig.Quantity, time.Now().Format(time.RFC3339Nano))
+
 				result, err := svc.exchange.PlaceBid(order, exchangeKey)
 				if err != nil {
-					panic(err)
+					logger.Error("cannot PlaceAsk order ", err)
+					return
 				}
-				fmt.Println("created buy order : ", result)
+				svc.broacast(placedOrderMessage(result))
+				svc.broacast(placedOrderMessage(result))
+				logger.Info("created buy order : ", result)
 				placedQuantity = result.ActualQuantity
 				svc.hasCreatedOrder = true
 			}
@@ -223,8 +212,23 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 		lastExecutionTime = time.Now()
 		turnCounter++
 	}
-	fmt.Println("bot has been stopped")
+	logger.Info("bot has been stopped")
+}
 
+func placedOrderMessage(result domain.PlaceOrderResult) domain.WsMessage {
+	message := fmt.Sprintf(
+		`symbol: %s, 
+	origin_quantity: %s, 
+	actual_quantity: %s, 
+	side: %s, 
+	order_type: %s, 
+	price: %s`, result.Symbol, result.OriginQuantity, result.ActualQuantity, result.Side, result.OrderType, result.Price)
+
+	return domain.WsMessage{
+		Time:    time.Now(),
+		Message: message,
+		Type:    domain.MessageTypeTradingReport,
+	}
 }
 
 func (svc *Service) broacast(message domain.WsMessage) {
@@ -264,8 +268,8 @@ func (svc *Service) emaSignal(configs ...emaConfig) bool {
 		if i == len(configs)-1 {
 			break
 		}
-		fmt.Println("EMA first priority = ", mapper[i].indicatorValue[len(mapper[i].indicatorValue)-1])
-		fmt.Println("EMA second priority = ", mapper[i+1].indicatorValue[len(mapper[i+1].indicatorValue)-1])
+		logger.Info("EMA first priority = ", mapper[i].indicatorValue[len(mapper[i].indicatorValue)-1])
+		logger.Info("EMA second priority = ", mapper[i+1].indicatorValue[len(mapper[i+1].indicatorValue)-1])
 
 		if svc.hasCreatedOrder {
 			// looking for sell signal
@@ -303,10 +307,10 @@ func (svc *Service) macdSignal(configs macDConfig) bool {
 	lastValueOfSignal := emaSignal[len(emaSignal)-1]
 	isOK := false
 	v := (lastValueOfMACD - lastValueOfSignal) / lastValueOfSignal
-	fmt.Println("Fast >>> ", len(emaFast), " Slow >>> ", len(emaSlow))
-	fmt.Println("current value >> ", lastValueOfMACD, " ", lastValueOfSignal, " Signal >>> ", emaSignal[len(emaSignal)-2:])
+	logger.Info("Fast >>> ", len(emaFast), " Slow >>> ", len(emaSlow))
+	logger.Info("current value >> ", lastValueOfMACD, " ", lastValueOfSignal, " Signal >>> ", emaSignal[len(emaSignal)-2:])
 	if v >= -0.1 && v <= 0.1 {
-		fmt.Println("almost cross >> ", lastValueOfMACD, " ", lastValueOfSignal)
+		logger.Info("almost cross >> ", lastValueOfMACD, " ", lastValueOfSignal)
 	}
 
 	if svc.hasCreatedOrder {
@@ -331,7 +335,7 @@ type RSIConfig struct {
 func (svc *Service) rsiSignal(configs RSIConfig) bool {
 	isOK := false
 	rsi := talib.Rsi(configs.values, configs.period)
-	fmt.Println(rsi[len(rsi)-1])
+	logger.Info(rsi[len(rsi)-1])
 	if svc.hasCreatedOrder {
 		// looking for sell signal
 		isOK = rsi[len(rsi)-1] > 70

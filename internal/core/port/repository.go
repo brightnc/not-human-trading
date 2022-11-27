@@ -25,3 +25,7 @@ type BotConfig interface {
 	RetrieveBotExchange() (domain.BotExchange, error)
 	UpdateBotExchange(in domain.BotExchange) error
 }
+
+type User interface {
+	RetrieveUserByID(userID string) (domain.User, error)
+}
