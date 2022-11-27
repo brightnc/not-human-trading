@@ -58,6 +58,7 @@ func (r *subscription) writeMessage() {
 			err = c.Ws.WriteJSON(message)
 			if err != nil {
 				fmt.Println("CANNOT WRITE JSON ", err)
+				return
 			}
 		}
 	}
