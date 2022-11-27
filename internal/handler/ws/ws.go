@@ -45,7 +45,6 @@ func (r *subscription) writeMessage() {
 	for {
 		select {
 		case message := <-c.Message:
-			fmt.Println("Broadcast Message  ", message)
 			_, err := json.Marshal(message)
 			if err != nil {
 				fmt.Println("CANNOT MARSHAL JSON ", err)

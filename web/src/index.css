@@ -1,0 +1,19 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  scroll-behavior: smooth;
+}
+
+body {
+  /* background: rgb(2, 0, 36); */
+  /* background: rgb(0, 0, 0); */
+  /* background: rgb(20, 21, 26); */
+  background: #161a1e;
+  /* background: linear-gradient(117deg, rgba(0, 0, 0, 0.9864320728291317) 25%, rgba(0, 5, 21, 0.9668242296918768) 51%, rgba(0, 31, 139, 0.9304096638655462) 70%, rgba(0, 75, 167, 0.896796218487395) 79%, rgba(0, 212, 255, 1) 97%); */
+  font-family: "Poppins", sans-serif;
+}

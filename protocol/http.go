@@ -8,6 +8,7 @@ import (
 	"github.com/brightnc/not-human-trading/config"
 	"github.com/brightnc/not-human-trading/internal/handler/httphdl"
 	"github.com/brightnc/not-human-trading/internal/handler/ws"
+	"github.com/brightnc/not-human-trading/web"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/websocket/v2"
@@ -26,10 +27,12 @@ import (
 // The example to serve REST
 func ServeREST() error {
 	srv := fiber.New(fiber.Config{
-		DisableKeepalive: false,
+		DisableKeepalive:      false,
+		DisableStartupMessage: true,
 	})
 
 	srv.Use(cors.New(cors.ConfigDefault))
+	web.Web(srv)
 	hdl := httphdl.NewHTTPHandler(app.svc, app.pkg.vld)
 	wshdl := ws.NewWebSocketHandler(app.svc, app.pkg.vld)
 	v1Group := srv.Group("/v1")
@@ -44,6 +47,7 @@ func ServeREST() error {
 		}
 		return fiber.ErrUpgradeRequired
 	})
+
 	exchangesV1Group := v1Group.Group("/exchanges")
 	exchangesV1Group.Put("", hdl.UpdateBotExchangeConfig)
 	wsV1Group.Get("", websocket.New(func(c *websocket.Conn) {

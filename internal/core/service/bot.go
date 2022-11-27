@@ -74,7 +74,7 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 		last1Month := time.Now().AddDate(0, -1, 0)
 		goneDaysOfMonth := last1Month.Day()
 		startDate := last1Month.AddDate(0, 0, -goneDaysOfMonth+1).Format("2006-01-02")
-		endDate := time.Now().Format("2006-01-02")
+		endDate := time.Now().AddDate(0, 0, 1).Format("2006-01-02")
 		// TODO: retrive klines information...
 		quote, err := svc.exchange.RetrieveKLines(
 			botConfig.OrderConfig.Symbol,

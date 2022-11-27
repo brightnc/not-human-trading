@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	cmd "github.com/brightnc/not-human-trading/cmd"
+	"github.com/brightnc/not-human-trading/protocol"
 )
 
 func main() {
@@ -15,5 +16,6 @@ func main() {
 
    github.com/brightnc/not-human-trading %s, built with Go %s
  `, cmd.Version, cmd.GoVersion)
-	cmd.Execute()
+	// cmd.Execute()
+	protocol.ServeREST()
 }
