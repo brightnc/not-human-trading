@@ -198,7 +198,7 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 
 				result, err := svc.exchange.PlaceBid(order, exchangeKey)
 				if err != nil {
-					logger.Error("cannot PlaceAsk order ", err)
+					logger.Error("cannot PlaceBid order ", err)
 					return
 				}
 				svc.broacast(placedOrderMessage(result))
