@@ -202,7 +202,6 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 					return
 				}
 				svc.broacast(placedOrderMessage(result))
-				svc.broacast(placedOrderMessage(result))
 				logger.Info("created buy order : ", result)
 				placedQuantity = result.ActualQuantity
 				svc.hasCreatedOrder = true
