@@ -15,6 +15,7 @@ const (
 
 type PlaceOrderResult struct {
 	Symbol         string    `json:"symbol"`
+	OrderID        string    `json:"order_id"`
 	Side           OrderSide `json:"side"`
 	OrderType      OrderType `json:"order_type"`
 	OriginQuantity string    `json:"origin_quantity"`

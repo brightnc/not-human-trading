@@ -2,6 +2,8 @@ package repository
 
 import (
 	"context"
+	"crypto/hmac"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -14,6 +16,7 @@ import (
 	"github.com/adshao/go-binance/v2"
 	"github.com/adshao/go-binance/v2/futures"
 	"github.com/brightnc/not-human-trading/internal/core/domain"
+	"github.com/brightnc/not-human-trading/pkg/logger"
 	"github.com/markcheno/go-quote"
 )
 
@@ -85,6 +88,95 @@ func (r *Binance) placeAskFutures(req domain.PlaceOrder, k domain.BotExchange) (
 	}, nil
 }
 
+func combineQuery(q domain.MyTradeFilter, time int64) string {
+	buffer := []string{}
+	if q.Symbol != nil {
+		buffer = append(buffer, "symbol="+*q.Symbol)
+	}
+	if q.OrderID != nil {
+		buffer = append(buffer, "orderId="+*q.OrderID)
+	}
+	if q.Limit != nil {
+		buffer = append(buffer, "limit="+strconv.Itoa(*q.Limit))
+	}
+	buffer = append(buffer, strconv.FormatInt(time, 16))
+	query := strings.Join(buffer, ",")
+	return query
+}
+func genSignature(params string, secretKey string) string {
+	mac := hmac.New(sha256.New, []byte(secretKey))
+	mac.Write([]byte(params))
+	return fmt.Sprintf("%x", mac.Sum(nil))
+}
+
+type myTradeResponse struct {
+	Symbol          string `json:"symbol"`
+	ID              int    `json:"id"`
+	OrderID         int    `json:"orderId"`
+	OrderListID     int    `json:"orderListId"`
+	Price           string `json:"price"`
+	Qty             string `json:"qty"`
+	QuoteQty        string `json:"quoteQty"`
+	Commission      string `json:"commission"`
+	CommissionAsset string `json:"commissionAsset"`
+	Time            int64  `json:"time"`
+	IsBuyer         bool   `json:"isBuyer"`
+	IsMaker         bool   `json:"isMaker"`
+	IsBestMatch     bool   `json:"isBestMatch"`
+}
+
+func (m myTradeResponse) ToMyTradeResultDomain() domain.MyTradeResult {
+	qty, err := strconv.ParseFloat(m.Qty, 64)
+	if err != nil {
+		logger.Errorf("cannot convert %s to be float64 got error %v", m.Qty, err)
+	}
+	fee, err := strconv.ParseFloat(m.Commission, 64)
+	if err != nil {
+		logger.Errorf("cannot convert %s to be float64 got error %v", m.Qty, err)
+	}
+	return domain.MyTradeResult{
+		Symbol:  m.Symbol,
+		OrderID: m.OrderID,
+		Qty:     qty,
+		Fee:     fee,
+		IsBuyer: m.IsBuyer,
+		Time:    m.Time,
+	}
+}
+
+func (r *Binance) RetriveMyTrades(filter domain.MyTradeFilter, k domain.BotExchange) ([]domain.MyTradeResult, error) {
+	t := time.Now().UnixMilli()
+	params := combineQuery(filter, t)
+	signingKey := genSignature(params, k.SecretKey)
+	url := fmt.Sprintf("https://api.binance.com/api/v3/myTrades?%s&signature=%s", params, signingKey)
+	fmt.Println(url)
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		logger.Error("error prepare requesting ... ", err)
+		return nil, err
+	}
+	req.Header.Add("X-MBX-APIKEY", k.APIKey)
+	resp, err := client.Do(req)
+	if err != nil {
+		logger.Error("error while requesting ... ", err)
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		logger.Error("error while reading payload ... ", err)
+		return nil, err
+	}
+	var response []myTradeResponse
+	json.Unmarshal(body, &response)
+	result := make([]domain.MyTradeResult, len(response))
+	for i := range response {
+		result[i] = response[i].ToMyTradeResultDomain()
+	}
+	return result, err
+}
+
 func (r *Binance) PlaceBid(req domain.PlaceOrder, k domain.BotExchange) (domain.PlaceOrderResult, error) {
 	if r.isTestNet {
 		return r.placeBidFutures(req, k)
@@ -97,6 +189,7 @@ func (r *Binance) PlaceBid(req domain.PlaceOrder, k domain.BotExchange) (domain.
 	}
 	return domain.PlaceOrderResult{
 		Symbol:         createdOrder.Symbol,
+		OrderID:        strconv.FormatInt(int64(createdOrder.OrderID), 16),
 		Side:           convertSideToDomain(string(createdOrder.Side)),
 		OrderType:      convertOrderTypeToDomain(string(createdOrder.Type)),
 		OriginQuantity: createdOrder.OrigQuantity,

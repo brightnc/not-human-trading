@@ -17,12 +17,9 @@ type Exchange interface {
 	PlaceAsk(domain.PlaceOrder, domain.BotExchange) (domain.PlaceOrderResult, error)
 	Cancel() error
 	RetrieveKLines(symbol, startDate, endDate string, period domain.Period) (domain.Quote, error)
-}
-
-type ExchangeWithoutFeeFromResp interface {
 	// RetriveMyTrades ...
 	// retrieving my trading history
-	RetriveMyTrades(filter domain.MyTradeFilter)
+	RetriveMyTrades(filter domain.MyTradeFilter, k domain.BotExchange) ([]domain.MyTradeResult, error)
 }
 
 type BotConfig interface {

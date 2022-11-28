@@ -41,7 +41,11 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 	lastExecutionTime := time.Now()
 	turnTimer := time.Now().Add(time.Second * 60)
 	turnCounter := 0
-	var placedQuantity string
+	type sellOrder struct {
+		symbol   string
+		quantity string
+	}
+	orderToSell := sellOrder{}
 	defer func() {
 		svc.broacast(domain.WsMessage{
 			Time:    time.Now(),
@@ -183,7 +187,8 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 			if svc.hasCreatedOrder {
 				//TODO: selling
 				logger.Info("Selling... symbol: %s quantity:  %v @%v\n", botConfig.OrderConfig.Symbol, botConfig.OrderConfig.Quantity, time.Now().Format(time.RFC3339Nano))
-				order.Quantity = placedQuantity
+				order.Quantity = orderToSell.quantity
+				order.Symbol = orderToSell.symbol
 				result, err := svc.exchange.PlaceAsk(order, exchangeKey)
 				if err != nil {
 					logger.Errorf("cannot PlaceAsk order %+v order got error %v", order, err)
@@ -202,8 +207,25 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 				}
 				svc.broacast(placedOrderMessage(result))
 				logger.Info("created buy order : ", result)
-				placedQuantity = result.ActualQuantity
-				logger.Infof("set wating for selling symbol %s with quantity %s", order.Symbol, placedQuantity)
+				limit := 1
+				filter := domain.MyTradeFilter{
+					Symbol:  &result.Symbol,
+					OrderID: &result.OrderID,
+					Limit:   &limit,
+				}
+				myTradeResult, err := svc.exchange.RetriveMyTrades(filter, botExchange)
+				if err != nil {
+					logger.Errorf("cannot RetriveMyTrades order %+v order with filter %+v got error %v", order, filter, err)
+					return
+				}
+				if len(myTradeResult) > 0 {
+					quantity := myTradeResult[0].Qty - myTradeResult[0].Fee
+					orderToSell = sellOrder{
+						symbol:   myTradeResult[0].Symbol,
+						quantity: fmt.Sprintf("%f", quantity),
+					}
+				}
+				logger.Infof("set wating for selling symbol %s with quantity %s", order.Symbol, orderToSell.quantity)
 				svc.hasCreatedOrder = true
 			}
 
