@@ -90,7 +90,7 @@ func (r *Binance) PlaceBid(req domain.PlaceOrder, k domain.BotExchange) (domain.
 		return r.placeBidFutures(req, k)
 	}
 	client := binance.NewClient(k.APIKey, k.SecretKey)
-	createdOrder, err := client.NewCreateOrderService().Symbol(req.Symbol).Side(binance.SideTypeBuy).Type(binance.OrderType(req.OrderType)).QuoteOrderQty(req.Quantity).Do(context.Background())
+	createdOrder, err := client.NewCreateOrderService().Symbol(req.Symbol).Side(binance.SideTypeBuy).Type(binance.OrderType(req.OrderType)).Quantity(req.Quantity).Do(context.Background())
 	if err != nil {
 		fmt.Println(err)
 		return domain.PlaceOrderResult{}, err
@@ -110,7 +110,7 @@ func (r *Binance) PlaceAsk(req domain.PlaceOrder, k domain.BotExchange) (domain.
 		return r.placeAskFutures(req, k)
 	}
 	client := binance.NewClient(k.APIKey, k.SecretKey)
-	createdOrder, err := client.NewCreateOrderService().Symbol(req.Symbol).Side(binance.SideTypeSell).Type(binance.OrderType(req.OrderType)).QuoteOrderQty(req.Quantity).Do(context.Background())
+	createdOrder, err := client.NewCreateOrderService().Symbol(req.Symbol).Side(binance.SideTypeSell).Type(binance.OrderType(req.OrderType)).Quantity(req.Quantity).Do(context.Background())
 	if err != nil {
 		fmt.Println(err)
 		return domain.PlaceOrderResult{}, err

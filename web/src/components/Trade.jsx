@@ -312,6 +312,7 @@ const Trade = () => {
             theme={Themes.DARK}
             locale="en"
             autosize
+            timezone="Asia/Bangkok"
           />
         </div>
         <div className="w-1/2 h-1/2 float-left relative">

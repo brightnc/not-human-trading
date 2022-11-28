@@ -1,4 +1,5 @@
 import axios from "axios";
+import bcrypt from "bcryptjs";
 import { Button, TextInput } from "flowbite-react";
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
@@ -10,6 +11,7 @@ const Header = () => {
     api_key: "",
     secret_key: "",
   });
+  const [hashed, setHashed] = useState("");
   const data = [
     {
       id: 1,
@@ -43,12 +45,13 @@ const Header = () => {
   };
 
   const handleSubmit = (e) => {
+    const allKeys = values.api_key + values.secret_key;
+    setHashed(bcrypt.hashSync(allKeys, 10));
     e.preventDefault();
 
     axios.put(baseURL, keys, config).then((res) => {
       console.log(res.data);
     });
-    toast.success("Saved!");
   };
   return (
     <div className="flex mt-3 mb-20 justify-between mx-5 items-center ">
@@ -75,6 +78,7 @@ const Header = () => {
       >
         <span className="text-[#181a20]">SAVE</span>
       </Button>
+      {hashed && <h2 className="text-white">{hashed}</h2>}
       <ToastContainer
         position="bottom-right"
         autoClose={2500}
