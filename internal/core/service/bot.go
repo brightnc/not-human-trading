@@ -186,7 +186,7 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 				order.Quantity = placedQuantity
 				result, err := svc.exchange.PlaceAsk(order, exchangeKey)
 				if err != nil {
-					logger.Error("cannot PlaceAsk order ", err)
+					logger.Errorf("cannot PlaceAsk order %+v order got error %v", order, err)
 					return
 				}
 				svc.broacast(placedOrderMessage(result))
@@ -195,15 +195,15 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 			} else {
 				// TODO:: buying
 				fmt.Printf("Buying... symbol: %s quantity:  %v @%s", botConfig.OrderConfig.Symbol, botConfig.OrderConfig.Quantity, time.Now().Format(time.RFC3339Nano))
-
 				result, err := svc.exchange.PlaceBid(order, exchangeKey)
 				if err != nil {
-					logger.Error("cannot PlaceBid order ", err)
+					logger.Errorf("cannot PlaceBid order %+v order got error %v", order, err)
 					return
 				}
 				svc.broacast(placedOrderMessage(result))
 				logger.Info("created buy order : ", result)
 				placedQuantity = result.ActualQuantity
+				logger.Infof("set wating for selling symbol %s with quantity %s", order.Symbol, placedQuantity)
 				svc.hasCreatedOrder = true
 			}
 

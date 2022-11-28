@@ -19,6 +19,12 @@ type Exchange interface {
 	RetrieveKLines(symbol, startDate, endDate string, period domain.Period) (domain.Quote, error)
 }
 
+type ExchangeWithoutFeeFromResp interface {
+	// RetriveMyTrades ...
+	// retrieving my trading history
+	RetriveMyTrades(filter domain.MyTradeFilter)
+}
+
 type BotConfig interface {
 	UpdateBotConfig(domain.BotConfig) error
 	RetrieveBotConfig() (domain.BotConfig, error)
