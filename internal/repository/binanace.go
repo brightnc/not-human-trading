@@ -99,8 +99,8 @@ func combineQuery(q domain.MyTradeFilter, time int64) string {
 	if q.Limit != nil {
 		buffer = append(buffer, "limit="+strconv.Itoa(*q.Limit))
 	}
-	buffer = append(buffer, strconv.FormatInt(time, 16))
-	query := strings.Join(buffer, ",")
+	buffer = append(buffer, "timestamp="+strconv.FormatInt(time, 16))
+	query := strings.Join(buffer, "&")
 	return query
 }
 func genSignature(params string, secretKey string) string {
