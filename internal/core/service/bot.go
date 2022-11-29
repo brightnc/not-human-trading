@@ -207,11 +207,9 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 				}
 				svc.broacast(placedOrderMessage(result))
 				logger.Info("created buy order : ", result)
-				limit := 1
 				filter := domain.MyTradeFilter{
 					Symbol:  &result.Symbol,
 					OrderID: &result.OrderID,
-					Limit:   &limit,
 				}
 				myTradeResult, err := svc.exchange.RetriveMyTrades(filter, botExchange)
 				if err != nil {

@@ -93,11 +93,11 @@ func combineQuery(q domain.MyTradeFilter, time int64) string {
 	if q.Symbol != nil {
 		buffer = append(buffer, "symbol="+*q.Symbol)
 	}
-	if q.OrderID != nil {
-		buffer = append(buffer, "orderId="+*q.OrderID)
-	}
 	if q.Limit != nil {
 		buffer = append(buffer, "limit="+strconv.Itoa(*q.Limit))
+	}
+	if q.OrderID != nil && q.Limit == nil {
+		buffer = append(buffer, "orderId="+*q.OrderID)
 	}
 	buffer = append(buffer, "timestamp="+strconv.FormatInt(time, 16))
 	query := strings.Join(buffer, "&")
