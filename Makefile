@@ -45,7 +45,7 @@ ci:
 # tells the version and go version.
 .PHONY: build
 build:
-	$(GO) build -ldflags '$(LDFLAGS)' -a -v -o $(GO_BINARY_NAME) main.go
+	$(shell $(GO) build -ldflags '$(LDFLAGS)' -a -v -o $(GO_BINARY_NAME)-windows.exe main.go)
 
 start:
 	go run ./main.go serve-rest
