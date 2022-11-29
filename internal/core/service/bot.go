@@ -199,12 +199,13 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 				svc.hasCreatedOrder = false
 			} else {
 				// TODO:: buying
-				fmt.Printf("Buying... symbol: %s quantity:  %v @%s", botConfig.OrderConfig.Symbol, botConfig.OrderConfig.Quantity, time.Now().Format(time.RFC3339Nano))
+				logger.Info("Buying... symbol: %s quantity:  %v @%s", botConfig.OrderConfig.Symbol, botConfig.OrderConfig.Quantity, time.Now().Format(time.RFC3339Nano))
 				result, err := svc.exchange.PlaceBid(order, exchangeKey)
 				if err != nil {
 					logger.Errorf("cannot PlaceBid order %+v order got error %v", order, err)
 					return
 				}
+				logger.Infof("Buying symbol result %+v", result)
 				svc.broacast(placedOrderMessage(result))
 				logger.Info("created buy order : ", result)
 				filter := domain.MyTradeFilter{
@@ -220,8 +221,9 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 					quantity := myTradeResult[0].Qty - myTradeResult[0].Fee
 					orderToSell = sellOrder{
 						symbol:   myTradeResult[0].Symbol,
-						quantity: fmt.Sprintf("%f", quantity),
+						quantity: fmt.Sprintf("%f", math.Floor(quantity)),
 					}
+					math.Floor(quantity)
 				}
 				logger.Infof("set wating for selling symbol %s with quantity %s", order.Symbol, orderToSell.quantity)
 				svc.hasCreatedOrder = true
