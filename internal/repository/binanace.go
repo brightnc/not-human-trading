@@ -99,7 +99,7 @@ func combineQuery(q domain.MyTradeFilter, time int64) string {
 	if q.OrderID != nil && q.Limit == nil {
 		buffer = append(buffer, "orderId="+*q.OrderID)
 	}
-	buffer = append(buffer, "timestamp="+strconv.FormatInt(time, 16))
+	buffer = append(buffer, "timestamp="+strconv.FormatInt(time, 10))
 	query := strings.Join(buffer, "&")
 	return query
 }
