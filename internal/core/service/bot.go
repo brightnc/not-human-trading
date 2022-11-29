@@ -223,7 +223,6 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 						symbol:   myTradeResult[0].Symbol,
 						quantity: fmt.Sprintf("%f", math.Floor(quantity)),
 					}
-					math.Floor(quantity)
 				}
 				logger.Infof("set wating for selling symbol %s with quantity %s", order.Symbol, orderToSell.quantity)
 				svc.hasCreatedOrder = true
