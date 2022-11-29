@@ -189,7 +189,7 @@ func (r *Binance) PlaceBid(req domain.PlaceOrder, k domain.BotExchange) (domain.
 	}
 	return domain.PlaceOrderResult{
 		Symbol:         createdOrder.Symbol,
-		OrderID:        strconv.FormatInt(int64(createdOrder.OrderID), 16),
+		OrderID:        strconv.FormatInt(int64(createdOrder.OrderID), 10),
 		Side:           convertSideToDomain(string(createdOrder.Side)),
 		OrderType:      convertOrderTypeToDomain(string(createdOrder.Type)),
 		OriginQuantity: createdOrder.OrigQuantity,
