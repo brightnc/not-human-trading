@@ -218,6 +218,19 @@ func (r *Binance) PlaceAsk(req domain.PlaceOrder, k domain.BotExchange) (domain.
 	}, nil
 }
 
+func (r *Binance) StepSize(req domain.PlaceOrder, k domain.BotExchange) (domain.SymbolStepSize, error) {
+
+	client := binance.NewClient(k.APIKey, k.SecretKey)
+	info, err := client.NewExchangeInfoService().Symbol(req.Symbol).Do(context.Background())
+	if err != nil {
+		panic(err)
+	}
+	stepSize := info.Symbols[0].LotSizeFilter().StepSize
+	return domain.SymbolStepSize{
+		StepSize: stepSize,
+	}, nil
+}
+
 func (r *Binance) Cancel() error { return nil }
 
 // RetrieveKLines...

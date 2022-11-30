@@ -20,6 +20,7 @@ type Exchange interface {
 	// RetriveMyTrades ...
 	// retrieving my trading history
 	RetriveMyTrades(filter domain.MyTradeFilter, k domain.BotExchange) ([]domain.MyTradeResult, error)
+	StepSize(req domain.PlaceOrder, k domain.BotExchange) (domain.SymbolStepSize, error)
 }
 
 type BotConfig interface {

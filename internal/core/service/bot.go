@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"math"
+	"strings"
 	"time"
 
 	"github.com/brightnc/not-human-trading/internal/core/domain"
@@ -219,9 +220,18 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 				}
 				if len(myTradeResult) > 0 {
 					quantity := myTradeResult[0].Qty - myTradeResult[0].Fee
+					quantityStr := fmt.Sprintf("%f", quantity)
+					stepsize, err := svc.exchange.StepSize(order, exchangeKey)
+
+					roundedQty := roundQuantity(quantityStr, stepsize.StepSize)
+					if err != nil {
+						logger.Errorf("cannot RetriveStepsizes order %+v got error %v", order, err)
+						return
+					}
 					orderToSell = sellOrder{
-						symbol:   myTradeResult[0].Symbol,
-						quantity: fmt.Sprintf("%f", math.Floor(quantity)),
+						symbol: myTradeResult[0].Symbol,
+						// quantity: fmt.Sprintf("%f", math.Floor(quantity)),
+						quantity: roundedQty,
 					}
 				}
 				logger.Infof("set wating for selling symbol %s with quantity %s", order.Symbol, orderToSell.quantity)
@@ -464,4 +474,19 @@ func superTrendDetail(configs SPTConfig) ([]float64, []float64, []float64, []boo
 	}
 
 	return trendUp, trendDown, tsl, trend, times
+}
+
+func roundQuantity(v string, s string) string {
+	j := strings.Index(v, ".")
+	i := strings.Index(s, "1")
+	fmt.Println("Index stepsize: ", j)
+	fmt.Println("Index:values", i)
+	if j > -1 {
+		chars := v[:j+i]
+		// arefun := v[j+i:]
+		return chars
+	} else {
+		fmt.Println("Index not found")
+	}
+	return v
 }
