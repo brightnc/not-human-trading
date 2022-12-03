@@ -80,7 +80,7 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 			botConfig.OrderConfig.Symbol,
 			startDate,
 			endDate,
-			domain.Min5,
+			botConfig.Timeframe,
 		)
 		if err != nil {
 			logger.Info("error while retrieving klines...")
@@ -177,7 +177,7 @@ func (svc *Service) startBot(botConfig domain.BotConfig, botExchange domain.BotE
 		}
 		if hasSignal {
 			order := domain.PlaceOrder{
-				Symbol:    botConfig.OrderConfig.Symbol,
+				Symbol:    strings.ToUpper(botConfig.OrderConfig.Symbol),
 				Quantity:  botConfig.OrderConfig.Quantity,
 				OrderType: domain.OrderTypeMarket,
 			}
